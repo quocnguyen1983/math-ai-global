@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -21,8 +21,11 @@ type Chat = {
   title: string;
   messages: Message[];
 };
-export default function Home() {
-  const [chats, setChats] = useState<any[]>([]);
+export default function ChatUI() {
+  const router = useRouter();
+  const [openUserMenu, setOpenUserMenu] = useState(false);
+  const [user, setUser] = useState<any>(null);
+    const [chats, setChats] = useState<any[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const handleNewChat = () => {
   const newChat = {
@@ -37,8 +40,14 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
-  const [openUserMenu, setOpenUserMenu] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  
+  const handleLogout = async () => {
+  await fetch("/api/logout", {
+    method: "POST",
+  });
+
+  router.push("/login");
+};
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   if (!currentChatId) return;
 
@@ -193,12 +202,9 @@ setInput("");
       setLoading(false);
     }
   };
-const handleLogout = async () => {
-  await fetch("/api/logout", { method: "POST" });
-  window.location.href = "/login";
-};
+
   return (
-     <div className="relative flex h-screen w-screen bg-[#343541] text-white overflow-hidden">
+    <div className="flex h-screen w-screen bg-[#343541] text-white overflow-hidden">
       
       {/* Sidebar */}
       <div className="w-64 bg-[#202123] p-4 flex flex-col">
@@ -254,63 +260,6 @@ const handleLogout = async () => {
 ))}
 
         </div>
-{/* User Menu - Bottom Right */}
-<div className="mt-auto relative">
-  <div className="mt-auto pt-4 border-t border-gray-700 relative">
-    {/* User Box */}
-    <div
-  onClick={() => setOpenUserMenu(!openUserMenu)}
-  className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-700"
->
- <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center uppercase font-semibold">
-  {(user?.name || user?.email)?.charAt(0).toUpperCase() || "U"}
-</div>
-
-<span>
-  {user?.name || user?.email?.split("@")[0] || "User"}
-</span>
-</div>
-
-    {/* Dropdown */}
-    {openUserMenu && (
-      <div className="absolute bottom-full mb-2 left-0 w-60 bg-white text-black rounded-lg shadow-lg overflow-hidden z-50">
-        
-        <Link
-  href="/upgrade"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Nâng cấp gói
-</Link>
-
-<Link
-  href="/settings"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Cài đặt
-</Link>
-
-<Link
-  href="/help"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Trợ giúp
-</Link>
-
-        <div className="border-t"></div>
-
-        <button
-          onClick={handleLogout}
-          className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
-        >
-          Đăng xuất
-        </button>
-      </div>
-    )}
-  </div>
-</div>
       </div>
 
       {/* Main */}
@@ -371,7 +320,6 @@ const handleLogout = async () => {
           </div>
         </div>
       </div>
-      
     </div>
   );
 }
