@@ -2,13 +2,12 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PayOS } from "@payos/node";
 
-const payos = new PayOS({
+export async function POST(req: Request) {
+  const payos = new PayOS({
   clientId: process.env.PAYOS_CLIENT_ID!,
   apiKey: process.env.PAYOS_API_KEY!,
   checksumKey: process.env.PAYOS_CHECKSUM_KEY!,
 });
-
-export async function POST(req: Request) {
   const body = await req.json();
 
   // ✅ verify chữ ký

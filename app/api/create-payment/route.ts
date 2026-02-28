@@ -3,14 +3,13 @@ import { PayOS } from "@payos/node";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/auth";
 
-const payos = new PayOS({
+export async function POST(req: Request) {
+  try {
+    const payos = new PayOS({
   clientId: process.env.PAYOS_CLIENT_ID!,
   apiKey: process.env.PAYOS_API_KEY!,
   checksumKey: process.env.PAYOS_CHECKSUM_KEY!,
 });
-
-export async function POST(req: Request) {
-  try {
     const user = await getUserFromToken(req);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

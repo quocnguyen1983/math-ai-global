@@ -1,6 +1,13 @@
 import jwt from "jsonwebtoken";
 import prisma from "./prisma";
-
+export function generateToken(payload: {
+  id: string;
+  email: string;
+}) {
+  return jwt.sign(payload, process.env.JWT_SECRET!, {
+    expiresIn: "7d",
+  });
+}
 export async function getUserFromToken(req: Request) {
   const cookie = req.headers.get("cookie");
   if (!cookie) return null;
