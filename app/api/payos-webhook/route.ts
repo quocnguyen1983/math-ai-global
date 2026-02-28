@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { PayOS } from "@payos/node";
 
 export async function POST(req: Request) {
+  console.log("🔥 PAYOS WEBHOOK HIT");
   const payos = new PayOS({
   clientId: process.env.PAYOS_CLIENT_ID!,
   apiKey: process.env.PAYOS_API_KEY!,
