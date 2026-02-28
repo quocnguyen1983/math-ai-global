@@ -1,38 +1,73 @@
+"use client";
 export default function UpgradePage() {
+  const handleUpgrade = async (plan: string, amount: number) => {
+  if (amount === 0) {
+    alert("Gói Free là mặc định, không cần thanh toán.");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/create-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ plan, amount }),
+    });
+
+    if (!res.ok) {
+      alert("Lỗi tạo thanh toán");
+      return;
+    }
+
+    const data = await res.json();
+
+    if (data.checkoutUrl) {
+      window.location.href = data.checkoutUrl;
+    } else {
+      alert("Không tạo được link thanh toán");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Có lỗi xảy ra");
+  }
+};
   const plans = [
-    {
-      name: "Free",
-      price: "0đ",
-      questions: "20 câu hỏi / tháng",
-      tokens: "50,000 tokens",
-      model: "GPT-3.5",
-      highlight: false,
-    },
-    {
-      name: "Standard",
-      price: "99,000đ",
-      questions: "500 câu hỏi / tháng",
-      tokens: "500,000 tokens",
-      model: "GPT-3.5 Turbo",
-      highlight: false,
-    },
-    {
-      name: "Pro",
-      price: "299,000đ",
-      questions: "2000 câu hỏi / tháng",
-      tokens: "2,000,000 tokens",
-      model: "GPT-4",
-      highlight: true,
-    },
-    {
-      name: "Premium",
-      price: "599,000đ",
-      questions: "Không giới hạn câu hỏi",
-      tokens: "10,000,000 tokens",
-      model: "GPT-4 Turbo",
-      highlight: false,
-    },
-  ];
+  {
+    name: "Free",
+    price: "0đ",
+    amount: 0,
+    questions: "20 câu hỏi / tháng",
+    tokens: "50,000 tokens",
+    model: "GPT-3.5",
+    highlight: false,
+  },
+  {
+    name: "Standard",
+    price: "99,000đ",
+    amount: 99000,
+    questions: "500 câu hỏi / tháng",
+    tokens: "500,000 tokens",
+    model: "GPT-3.5 Turbo",
+    highlight: false,
+  },
+  {
+    name: "Pro",
+    price: "299,000đ",
+    amount: 299000,
+    questions: "2000 câu hỏi / tháng",
+    tokens: "2,000,000 tokens",
+    model: "GPT-4",
+    highlight: true,
+  },
+  {
+    name: "Premium",
+    price: "599,000đ",
+    amount: 599000,
+    questions: "Không giới hạn câu hỏi",
+    tokens: "10,000,000 tokens",
+    model: "GPT-4 Turbo",
+    highlight: false,
+  },
+];
 
   return (
     <div className="min-h-screen bg-gray-950 text-white px-6 py-16">
@@ -67,14 +102,20 @@ export default function UpgradePage() {
             </ul>
 
             <button
-              className={`w-full py-2 rounded-lg font-semibold ${
-                plan.highlight
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-gray-700 hover:bg-gray-600"
-              }`}
-            >
-              Chọn gói
-            </button>
+  onClick={() =>
+    handleUpgrade(
+      plan.name.toLowerCase(),
+      parseInt(plan.price.replace(/\D/g, "")) || 0
+    )
+  }
+  className={`w-full py-2 rounded-lg font-semibold ${
+    plan.highlight
+      ? "bg-green-600 hover:bg-green-700"
+      : "bg-gray-700 hover:bg-gray-600"
+  }`}
+>
+  Chọn gói
+</button>
           </div>
         ))}
       </div>

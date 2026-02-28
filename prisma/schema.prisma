@@ -19,6 +19,18 @@ model User {
   monthlyResetAt  DateTime @default(now())
 
   createdAt       DateTime @default(now())
+  orders Order[]
+}
+model Order {
+  id          String   @id @default(uuid())
+  userId      String
+  plan        String
+  amount      Int
+  status      String   @default("pending")
+  orderCode   Int      @unique
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 

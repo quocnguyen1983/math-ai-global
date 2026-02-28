@@ -1,16 +1,25 @@
 import jwt from "jsonwebtoken";
+import prisma from "./prisma";
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+export async function getUserFromToken(req: Request) {
+  const cookie = req.headers.get("cookie");
+  if (!cookie) return null;
 
-export function generateToken(payload: any) {
-  return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: "7d",
-  });
-}
+  const token = cookie
+    .split("; ")
+    .find((c) => c.startsWith("token="))
+    ?.split("=")[1];
 
-export function verifyToken(token: string) {
+  if (!token) return null;
+
   try {
-    return jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
+
+    return user;
   } catch {
     return null;
   }
