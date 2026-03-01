@@ -26,7 +26,9 @@ export async function POST(req: Request) {
 const orderCode = BigInt((webhookData as any).orderCode);
 const status = (webhookData as any).status;
 
-if (status === "PAID") {
+ const code = (webhookData as any).code;
+
+if (code === "00") {
   console.log("💰 Payment confirmed for order:", orderCode.toString());
 
   // Tìm order trong DB
