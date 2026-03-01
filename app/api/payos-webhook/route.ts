@@ -21,7 +21,44 @@ export async function POST(req: Request) {
     }
 
     console.log("✅ Webhook verified:", webhookData);
+    // ================= UPDATE DATABASE =================
 
+const orderCode = BigInt((webhookData as any).orderCode);
+const status = (webhookData as any).status;
+
+if (status === "PAID") {
+  console.log("💰 Payment confirmed for order:", orderCode.toString());
+
+  // Tìm order trong DB
+  const order = await prisma.order.findUnique({
+    where: { orderCode },
+  });
+
+  if (order) {
+    // Update trạng thái order
+    await prisma.order.update({
+      where: { orderCode },
+      data: { status: "paid" },
+    });
+
+    // Update user plan
+    await prisma.user.update({
+      where: { id: order.userId },
+      data: {
+        plan: order.plan,
+        questionsUsed: 0,
+        tokensUsed: 0,
+        monthlyResetAt: new Date(),
+      },
+    });
+
+    console.log("🚀 User upgraded to:", order.plan);
+  } else {
+    console.log("❌ Order not found in DB");
+  }
+}
+
+// ====================================================
     return new Response("OK", { status: 200 });
 
   } catch (error) {
