@@ -4,47 +4,30 @@ import { PayOS } from "@payos/node";
 
 export async function POST(req: Request) {
   console.log("🔥 PAYOS WEBHOOK HIT");
+
   const payos = new PayOS({
-  clientId: process.env.PAYOS_CLIENT_ID!,
-  apiKey: process.env.PAYOS_API_KEY!,
-  checksumKey: process.env.PAYOS_CHECKSUM_KEY!,
-});
-  const body = await req.json();
+    clientId: process.env.PAYOS_CLIENT_ID!,
+    apiKey: process.env.PAYOS_API_KEY!,
+    checksumKey: process.env.PAYOS_CHECKSUM_KEY!,
+  });
 
-  // ✅ verify chữ ký
-  const webhookData = await payos.webhooks.verify(body);
+  try {
+    const body = await req.json();
 
-  if (!webhookData) {
-    return NextResponse.json(
-      { error: "Invalid signature" },
-      { status: 400 }
-    );
+    const webhookData = await payos.webhooks.verify(body);
+
+    if (!webhookData) {
+      return new Response("Invalid signature", { status: 400 });
+    }
+
+    console.log("✅ Webhook verified:", webhookData);
+
+    return new Response("OK", { status: 200 });
+
+  } catch (error) {
+    console.error("❌ Webhook error:", error);
+
+    // QUAN TRỌNG: luôn trả về 200
+    return new Response("OK", { status: 200 });
   }
-
-  const { orderCode } = webhookData;
-
-  const order = await prisma.order.findUnique({
-    where: { orderCode },
-  });
-
-  if (!order) {
-    return NextResponse.json(
-      { error: "Order not found" },
-      { status: 404 }
-    );
-  }
-
-  await prisma.order.update({
-    where: { id: order.id },
-    data: { status: "PAID" },
-  });
-
-  await prisma.user.update({
-    where: { id: order.userId },
-    data: {
-      plan: order.plan,
-    },
-  });
-
-  return NextResponse.json({ success: true });
 }
