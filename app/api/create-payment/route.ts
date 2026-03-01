@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         userId: user.id,
         plan,
         amount,
-        orderCode
+        orderCode: BigInt(orderCode)
       }
     });
 
