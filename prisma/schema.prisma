@@ -27,7 +27,7 @@ model Order {
   plan        String
   amount      Int
   status      String   @default("pending")
-  orderCode   Int      @unique
+  orderCode   BigInt      @unique
   createdAt   DateTime @default(now())
 
   user        User     @relation(fields: [userId], references: [id])
