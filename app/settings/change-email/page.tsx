@@ -21,12 +21,10 @@ export default function ChangeEmail() {
 
       <div className="max-w-md space-y-4">
         <input
-          type="email"
-          placeholder="Email mới"
-          className="w-full p-3 rounded text-black"
-          value={newEmail}
-          onChange={(e) => setNewEmail(e.target.value)}
-        />
+  type="email"
+  placeholder="Email mới"
+  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+/>
 
         <button
           onClick={handleSubmit}

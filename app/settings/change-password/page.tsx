@@ -1,46 +1,47 @@
 "use client";
 import { useState } from "react";
 
-export default function ChangePassword() {
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-
-  const handleSubmit = async () => {
-    const res = await fetch("/api/change-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ oldPassword, newPassword }),
-    });
-
-    const data = await res.json();
-    alert(data.success ? "Đổi mật khẩu thành công" : data.error);
-  };
+export default function ChangePasswordPage() {
+  const [showOld, setShowOld] = useState(false);
+  const [showNew, setShowNew] = useState(false);
 
   return (
-    <div className="min-h-screen p-10 text-white">
-      <h1 className="text-3xl font-bold mb-6">🔐 Đổi mật khẩu</h1>
+    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950 text-white p-10">
+      <h1 className="text-3xl font-bold mb-8">🔐 Đổi mật khẩu</h1>
 
-      <div className="max-w-md space-y-4">
-        <input
-          type="password"
-          placeholder="Mật khẩu cũ"
-          className="w-full p-3 rounded text-black"
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-        />
+      <div className="space-y-6 max-w-md">
 
-        <input
-          type="password"
-          placeholder="Mật khẩu mới"
-          className="w-full p-3 rounded text-black"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
+        {/* Mật khẩu cũ */}
+        <div className="relative">
+          <input
+            type={showOld ? "text" : "password"}
+            placeholder="Mật khẩu cũ"
+            className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <span
+            onClick={() => setShowOld(!showOld)}
+            className="absolute right-4 top-3 cursor-pointer text-gray-400"
+          >
+            {showOld ? "🙈" : "👁"}
+          </span>
+        </div>
 
-        <button
-          onClick={handleSubmit}
-          className="bg-green-600 px-5 py-2 rounded-lg"
-        >
+        {/* Mật khẩu mới */}
+        <div className="relative">
+          <input
+            type={showNew ? "text" : "password"}
+            placeholder="Mật khẩu mới"
+            className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <span
+            onClick={() => setShowNew(!showNew)}
+            className="absolute right-4 top-3 cursor-pointer text-gray-400"
+          >
+            {showNew ? "🙈" : "👁"}
+          </span>
+        </div>
+
+        <button className="bg-green-600 hover:bg-green-700 px-5 py-3 rounded-lg font-medium">
           Cập nhật
         </button>
       </div>
