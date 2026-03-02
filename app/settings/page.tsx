@@ -1,4 +1,24 @@
+"use client";
+import Link from "next/link";
+import { useEffect } from "react";
 export default function SettingsPage() {
+  const toggleTheme = () => {
+  const isDark = document.documentElement.classList.contains("dark");
+
+  if (isDark) {
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  } else {
+    document.documentElement.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  }
+};
+useEffect(() => {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.documentElement.classList.add("dark");
+  }
+}, []);
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950 text-white px-6 py-12">
       
@@ -25,9 +45,11 @@ export default function SettingsPage() {
                 </p>
               </div>
 
-              <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium">
-                Thay đổi
-              </button>
+              <Link href="/settings/change-password">
+  <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium">
+    Thay đổi
+  </button>
+</Link>
             </div>
           </div>
 
@@ -41,9 +63,11 @@ export default function SettingsPage() {
                 </p>
               </div>
 
-              <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium">
-                Cập nhật
-              </button>
+              <Link href="/settings/change-email">
+  <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium">
+    Cập nhật
+  </button>
+</Link>
             </div>
           </div>
 
@@ -57,9 +81,12 @@ export default function SettingsPage() {
                 </p>
               </div>
 
-              <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium">
-                Bật / Tắt
-              </button>
+              <button
+  onClick={toggleTheme}
+  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium"
+>
+  Bật / Tắt
+</button>
             </div>
           </div>
 
