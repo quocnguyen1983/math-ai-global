@@ -298,7 +298,13 @@ const handleLogout = async () => {
 >
   Trợ giúp
 </Link>
-
+<Link
+  href="/account"
+  onClick={() => setOpenUserMenu(false)}
+  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+>
+  Thông tin gói cước
+</Link>
         <div className="border-t"></div>
 
         <button
