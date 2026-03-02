@@ -85,7 +85,7 @@ useEffect(() => {
   const fetchUser = async () => {
     const res = await fetch("/api/me");
     const data = await res.json();
-    setUser(data.user);
+    setUser(data);
   };
 
   fetchUser();
