@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function ChangeEmail() {
+export default function ChangeEmailPage() {
   const [newEmail, setNewEmail] = useState("");
 
   const handleSubmit = async () => {
@@ -19,65 +19,34 @@ export default function ChangeEmail() {
   };
 
   return (
-    <div
-      className="
-        min-h-screen 
-        bg-white 
-        dark:bg-linear-to-br dark:from-gray-950 dark:via-gray-900 dark:to-gray-950
-        text-black 
-        dark:text-white
-        px-6 py-12
-        transition-colors duration-300
-      "
-    >
-      <div className="max-w-xl">
+    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950 text-white p-10">
+      
+      {/* Title */}
+      <h1 className="text-3xl font-bold mb-8">
+        📧 Đổi email
+      </h1>
 
-        {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
-            <span className="text-3xl">📧</span>
-            Đổi email
-          </h1>
+      <div className="space-y-6 max-w-md">
 
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Cập nhật Email
-          </p>
-        </div>
-
-        {/* Form */}
-        <div className="space-y-6">
-
+        {/* Input Email */}
+        <div className="relative">
           <input
             type="email"
             placeholder="Email mới"
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
-            className="
-              w-full
-              px-4 py-4
-              rounded-xl
-              bg-gray-100 dark:bg-gray-800
-              border border-gray-300 dark:border-gray-600
-              focus:outline-none
-              focus:ring-2 focus:ring-green-500
-              transition-all duration-200
-            "
+            className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-
-          <button
-            onClick={handleSubmit}
-            className="
-              bg-green-600 
-              hover:bg-green-700 
-              px-6 py-3 
-              rounded-xl 
-              font-medium
-              transition-all duration-200
-            "
-          >
-            Cập nhật
-          </button>
         </div>
+
+        {/* Button */}
+        <button
+          onClick={handleSubmit}
+          className="bg-green-600 hover:bg-green-700 px-5 py-3 rounded-lg font-medium"
+        >
+          Cập nhật
+        </button>
+
       </div>
     </div>
   );
