@@ -110,24 +110,11 @@ useEffect(() => {
 const currentChat = chats.find(chat => chat.id === currentChatId);
   const messages = currentChat?.messages || [];
 useEffect(() => {
-  
-  useEffect(() => {
   if (chatContainerRef.current) {
     chatContainerRef.current.scrollTop =
       chatContainerRef.current.scrollHeight;
   }
 }, [messages, loading]);
-}, [messages, loading]);
-  
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-  image?: string;
-  file?: {
-    name: string;
-    url: string;
-  };
-};
 
   const createNewChat = () => {
     const newChat = {
