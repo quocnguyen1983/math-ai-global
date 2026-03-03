@@ -8,7 +8,7 @@ export default function HelpPage() {
     email: "",
     message: "",
   });
-
+const [success, setSuccess] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -18,19 +18,51 @@ export default function HelpPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(form);
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    alert("Yêu cầu hỗ trợ đã được gửi!");
-
-    setForm({
-      name: "",
-      email: "",
-      message: "",
+  try {
+    const res = await fetch("/api/help", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
     });
-  };
 
+    if (res.ok) {
+      setSuccess(true);
+      setForm({ name: "", email: "", message: "" });
+    } else {
+      alert("Gửi thất bại, vui lòng thử lại.");
+    }
+  } catch (error) {
+    alert("Có lỗi xảy ra.");
+  }
+};
+if (success) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#0F172A] text-white p-6">
+      <div className="max-w-xl text-center space-y-4">
+        <h1 className="text-3xl font-bold text-green-400">
+          Yêu cầu của bạn đã được gửi thành công !
+        </h1>
+
+        <p>
+          Chúng tôi sẽ kiểm tra và phản hồi cho bạn trong thời gian sớm nhất.
+        </p>
+
+        <p>
+          Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi !
+        </p>
+
+        <p className="text-green-300 font-semibold">
+          Chúc bạn một ngày tốt lành !
+        </p>
+      </div>
+    </div>
+  );
+}
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950 text-white px-6 py-12">
       <div className="max-w-2xl mx-auto">
