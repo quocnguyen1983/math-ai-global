@@ -141,7 +141,7 @@ if (success) {
         <div className="mt-8 text-center text-gray-400 text-sm">
           Hoặc liên hệ trực tiếp qua email:{" "}
           <span className="text-green-400 font-medium">
-            support@yourapp.com
+            servicetoan.ai@gmail.com
           </span>
         </div>
       </div>
