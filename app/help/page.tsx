@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 export default function HelpPage() {
   const [form, setForm] = useState({
     name: "",
@@ -10,14 +8,7 @@ export default function HelpPage() {
     message: "",
   });
 const [success, setSuccess] = useState(false);
-const router = useRouter();
-useEffect(() => {
-  const timer = setTimeout(() => {
-    router.push("/"); // quay về trang chính
-  }, 5000);
 
-  return () => clearTimeout(timer);
-}, [router]);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
