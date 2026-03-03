@@ -39,7 +39,7 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   if (!currentChatId) return;
 
@@ -111,7 +111,12 @@ const currentChat = chats.find(chat => chat.id === currentChatId);
   const messages = currentChat?.messages || [];
 useEffect(() => {
   
-  bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => {
+  if (chatContainerRef.current) {
+    chatContainerRef.current.scrollTop =
+      chatContainerRef.current.scrollHeight;
+  }
+}, [messages, loading]);
 }, [messages, loading]);
   
 type Message = {
@@ -328,7 +333,10 @@ const handleLogout = async () => {
       <div className="flex-1 flex flex-col">
         
         {/* Chat area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div
+  ref={chatContainerRef}
+  className="flex-1 overflow-y-auto p-6 space-y-4"
+>
           {messages.map((msg: any, index: number) => (
             <div
               key={index}
@@ -356,7 +364,7 @@ const handleLogout = async () => {
               <span className="font-bold text-white">AI:</span> Đang trả lời...
             </div>
           )}
-          <div ref={bottomRef} />
+          
         </div>
 
         {/* Input */}
