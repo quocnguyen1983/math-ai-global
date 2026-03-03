@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      where: { id: decoded.id },
     });
 
     if (!user || !user.password) {
