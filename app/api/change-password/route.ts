@@ -1,53 +1,58 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
+    const { oldPassword, newPassword } = await req.json();
+
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
     if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Chưa đăng nhập" },
+        { status: 401 }
+      );
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-
-    const { oldPassword, newPassword } = await req.json();
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.id },
+      where: { id: decoded.userId },
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!user || !user.password) {
+      return NextResponse.json(
+        { error: "User không tồn tại" },
+        { status: 400 }
+      );
     }
 
-    if (!user.password) {
-  return NextResponse.json(
-    { error: "Tài khoản chưa có mật khẩu" },
-    { status: 400 }
-  );
-}
-
-const isMatch = await bcrypt.compare(oldPassword, user.password);
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
 
     if (!isMatch) {
-      return NextResponse.json({ error: "Sai mật khẩu cũ" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Mật khẩu cũ không đúng" },
+        { status: 400 }
+      );
     }
 
-    const hashed = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { password: hashed },
+      data: { password: hashedPassword },
     });
 
     return NextResponse.json({ success: true });
 
-  } catch (err) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Lỗi server" },
+      { status: 500 }
+    );
   }
 }
