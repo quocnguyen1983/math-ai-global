@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -39,6 +39,7 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   if (!currentChatId) return;
 
@@ -106,9 +107,13 @@ useEffect(() => {
   useEffect(() => {
     localStorage.setItem("chats", JSON.stringify(chats));
   }, [chats]);
-
-  const currentChat = chats.find(chat => chat.id === currentChatId);
+const currentChat = chats.find(chat => chat.id === currentChatId);
   const messages = currentChat?.messages || [];
+useEffect(() => {
+  
+  bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+}, [messages, loading]);
+  
 type Message = {
   role: "user" | "assistant";
   content: string;
@@ -351,6 +356,7 @@ const handleLogout = async () => {
               <span className="font-bold text-white">AI:</span> Đang trả lời...
             </div>
           )}
+          <div ref={bottomRef} />
         </div>
 
         {/* Input */}
