@@ -2,23 +2,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 export default function SettingsPage() {
-  const toggleTheme = () => {
-  const isDark = document.documentElement.classList.contains("dark");
-
-  if (isDark) {
-    document.documentElement.classList.remove("dark");
-    localStorage.setItem("theme", "light");
-  } else {
-    document.documentElement.classList.add("dark");
-    localStorage.setItem("theme", "dark");
-  }
-};
-useEffect(() => {
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.documentElement.classList.add("dark");
-  }
-}, []);
+ 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950 text-white px-6 py-12">
       
@@ -68,25 +52,6 @@ useEffect(() => {
     Cập nhật
   </button>
 </Link>
-            </div>
-          </div>
-
-          {/* Dark Mode */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-green-500 transition">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-lg font-semibold">🌙 Chế độ tối / sáng</h2>
-                <p className="text-gray-400 text-sm">
-                  Tùy chỉnh giao diện theo sở thích của bạn
-                </p>
-              </div>
-
-              <button
-  onClick={toggleTheme}
-  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium"
->
-  Bật / Tắt
-</button>
             </div>
           </div>
 
