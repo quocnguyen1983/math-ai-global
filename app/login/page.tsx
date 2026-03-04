@@ -32,7 +32,7 @@ if (!res.ok) {
   return;
 }
 
-router.push("/");
+router.push("/chat");
   };
 
   return (

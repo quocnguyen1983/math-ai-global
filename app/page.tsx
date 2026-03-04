@@ -1,384 +1,160 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import "katex/dist/katex.min.css";
 
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-  image?: string;
-  file?: {
-    name: string;
-    url: string;
-  };
-};
-type Chat = {
-  id: string;
-  title: string;
-  messages: Message[];
-};
-export default function Home() {
-  const [chats, setChats] = useState<any[]>([]);
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  const handleNewChat = () => {
-  const newChat = {
-    id: Date.now().toString(),
-    title: "Cuộc trò chuyện mới",
-    messages: [],
-  };
-
-  setChats(prev => [newChat, ...prev]);
-  setCurrentChatId(newChat.id);
-};
-
-  const [loading, setLoading] = useState(false);
-  const [input, setInput] = useState("");
-  const [openUserMenu, setOpenUserMenu] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (!currentChatId) return;
-
-  const files = e.target.files;
-  if (!files) return;
-
-  Array.from(files).forEach((file) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const isImage = file.type.startsWith("image/");
-
-      const newMessage: Message = {
-        role: "user",
-        content: "",
-        ...(isImage
-          ? { image: reader.result as string }
-          : {
-              file: {
-                name: file.name,
-                url: reader.result as string,
-              },
-            }),
-      };
-
-      setChats((prev) =>
-        prev.map((chat) =>
-          chat.id === currentChatId
-            ? {
-                ...chat,
-                messages: [...chat.messages, newMessage],
-              }
-            : chat
-        )
-      );
-    };
-
-    reader.readAsDataURL(file);
-  });
-
-  e.target.value = ""; // reset input
-};
-useEffect(() => {
-  const fetchUser = async () => {
-    const res = await fetch("/api/me");
-    const data = await res.json();
-    setUser(data);
-  };
-
-  fetchUser();
-}, []);
-  // Load localStorage
-  useEffect(() => {
-    const savedChats = localStorage.getItem("chats");
-    if (savedChats) {
-      const parsed = JSON.parse(savedChats);
-      setChats(parsed);
-      if (parsed.length > 0) {
-        setCurrentChatId(parsed[0].id);
-      }
-    }
-  }, []);
-
-  // Save localStorage
-  useEffect(() => {
-    localStorage.setItem("chats", JSON.stringify(chats));
-  }, [chats]);
-const currentChat = chats.find(chat => chat.id === currentChatId);
-  const messages = currentChat?.messages || [];
-useEffect(() => {
-  if (chatContainerRef.current) {
-    chatContainerRef.current.scrollTop =
-      chatContainerRef.current.scrollHeight;
-  }
-}, [messages, loading]);
-
-  const createNewChat = () => {
-    const newChat = {
-      id: Date.now().toString(),
-      title: "Cuộc trò chuyện mới",
-      messages: [
-        { role: "assistant", content: "Chào bạn! Tôi có thể giúp gì?" }
-      ]
-    };
-
-    setChats(prev => [newChat, ...prev]);
-    setCurrentChatId(newChat.id);
-  };
-
-  const clearAllChats = () => {
-    setChats([]);
-    setCurrentChatId(null);
-    localStorage.removeItem("chats");
-  };
-
-  const handleSend = async () => {
-    if (!input || !currentChatId) return;
-
-    const userMessage = { role: "user", content: input };
-
-    setChats(prevChats =>
-  prevChats.map(chat => {
-    if (chat.id === currentChatId) {
-
-      const updatedMessages = [...chat.messages, userMessage];
-
-      // 👉 Nếu chat chưa có title thực sự
-      const newTitle =
-        chat.messages.length === 0
-          ? userMessage.content.slice(0, 30)
-          : chat.title;
-
-      return {
-        ...chat,
-        messages: updatedMessages,
-        title: newTitle,
-      };
-    }
-    return chat;
-  })
-);
-setInput("");
-
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
-      });
-
-      const data = await res.json();
-
-      const aiMessage = { role: "assistant", content: data.reply };
-
-      setChats(prev =>
-        prev.map(chat =>
-          chat.id === currentChatId
-            ? { ...chat, messages: [...chat.messages, aiMessage] }
-            : chat
-        )
-      );
-
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
-const handleLogout = async () => {
-  await fetch("/api/logout", { method: "POST" });
-  window.location.href = "/login";
-};
+export default function HomePage() {
   return (
-     <div className="relative flex h-screen w-screen bg-[#343541] text-white overflow-hidden">
-      
-      {/* Sidebar */}
-      <div className="w-64 bg-[#202123] p-4 flex flex-col">
-        <button
-  onClick={handleNewChat}
-  className="w-full p-2 bg-gray-700 rounded"
->
-  + Cuộc trò chuyện mới
-</button>
+    <div className="min-h-screen bg-[#020617] text-white">
 
-        <button
-          onClick={clearAllChats}
-          className="mt-3 bg-[#5C4033] hover:bg-[#4a342a] text-white p-2 rounded transition"
-        >
-          Xóa toàn bộ
-        </button>
+      {/* NAVBAR */}
+      <nav className="flex justify-between items-center px-10 py-6 border-b border-gray-800">
 
-        <div className="mt-4 space-y-2 overflow-y-auto">
-          {chats.map(chat => (
-  <div key={chat.id} className="group relative">
+        <div className="text-xl font-bold text-green-400">
+          AI Toán Học
+        </div>
 
-    <button
-      onClick={() => setCurrentChatId(chat.id)}
-      className={`w-full text-left p-2 rounded ${
-        currentChatId === chat.id
-          ? "bg-gray-600"
-          : "bg-gray-700"
-      }`}
-    >
-      {chat.title}
-    </button>
+        <div className="flex gap-6">
 
-    {/* Nút đổi tên */}
-    <button
-      onClick={() => {
-        const newName = prompt("Đổi tên cuộc trò chuyện:", chat.title);
-        if (!newName) return;
+          <Link href="/login" className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg">
+            Đăng nhập
+          </Link>
 
-        setChats(prev =>
-          prev.map(c =>
-            c.id === chat.id
-              ? { ...c, title: newName }
-              : c
-          )
-        );
-      }}
-      className="absolute right-2 top-2 hidden group-hover:block text-xs"
-    >
-      ✏️
-    </button>
-
-  </div>
-))}
+          <Link
+            href="/register"
+            className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
+          >
+            Đăng ký miễn phí
+          </Link>
 
         </div>
-{/* User Menu - Bottom Right */}
-<div className="mt-auto relative">
-  <div className="mt-auto pt-4 border-t border-gray-700 relative">
-    {/* User Box */}
-    <div
-  onClick={() => setOpenUserMenu(!openUserMenu)}
-  className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-700"
->
- <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center uppercase font-semibold">
-  {(user?.name || user?.email)?.charAt(0).toUpperCase() || "U"}
-</div>
 
-<span>
-  {user?.name || user?.email?.split("@")[0] || "User"}
-</span>
-</div>
+      </nav>
 
-    {/* Dropdown */}
-    {openUserMenu && (
-      <div className="absolute bottom-full mb-2 left-0 w-60 bg-white text-black rounded-lg shadow-lg overflow-hidden z-50">
-        
+
+      {/* HERO */}
+      <section className="text-center py-32 px-6">
+
+        <h1 className="text-5xl font-bold mb-6">
+          AI Giải Toán Lớp 1-12
+        </h1>
+
+        <p className="text-gray-400 text-lg mb-10">
+          Hỏi bất kỳ bài toán lớp 1-12 nào và nhận lời giải chi tiết trong vài giây.
+        </p>
+
+
+        <div className="max-w-2xl mx-auto flex gap-3">
+
+          <input
+            placeholder="Ví dụ: Giải phương trình x³ - 3x + 1 = 0"
+            className="flex-1 bg-[#1e293b] border border-gray-700 px-4 py-3 rounded-lg"
+          />
+
+          <Link
+            href="/login"
+            className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg"
+          >
+            Giải ngay
+          </Link>
+
+        </div>
+
+      </section>
+
+
+      {/* FEATURES */}
+      <section className="grid md:grid-cols-3 gap-8 px-10 py-16 max-w-6xl mx-auto">
+
+        <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+          <h3 className="text-xl font-semibold mb-3">
+            ⚡ Giải nhanh
+          </h3>
+          <p className="text-gray-400">
+            AI giải bài toán trong vài giây.
+          </p>
+        </div>
+
+        <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+          <h3 className="text-xl font-semibold mb-3">
+            📚 Giải chi tiết
+          </h3>
+          <p className="text-gray-400">
+            Phân tích từng bước dễ hiểu.
+          </p>
+        </div>
+
+        <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+          <h3 className="text-xl font-semibold mb-3">
+            🎯 Chuẩn chương trình
+          </h3>
+          <p className="text-gray-400">
+            Phù hợp chương trình Toán lớp 1-12.
+          </p>
+        </div>
+
+      </section>
+    {/* MORE FEATURES */}
+<section className="grid md:grid-cols-3 gap-8 px-10 py-10 max-w-6xl mx-auto">
+
+  {/* H1 */}
+  <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+    <h3 className="text-xl font-semibold mb-3">
+      📘 Ôn Tập
+    </h3>
+
+    <p className="text-gray-400">
+      Giải pháp giúp học sinh ôn tập hiệu quả môn Toán.
+    </p>
+  </div>
+
+
+  {/* H2 */}
+  <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+    <h3 className="text-xl font-semibold mb-3">
+      🤖 Trợ lý toán
+    </h3>
+
+    <p className="text-gray-400">
+      Trợ lý đắc lực cho phụ huynh trong việc dạy con môn Toán.
+    </p>
+  </div>
+
+
+  {/* H3 */}
+  <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+    <h3 className="text-xl font-semibold mb-3">
+      📝 Thư viện đề thi
+    </h3>
+
+    <p className="text-gray-400">
+      Giúp giáo viên tạo đề thi nhanh và hiệu quả nhất.
+    </p>
+  </div>
+
+</section>
+
+      {/* CTA */}
+      <section className="text-center py-20">
+
+        <h2 className="text-3xl font-bold mb-6">
+          Bắt đầu học toán với AI ngay hôm nay
+        </h2>
+
         <Link
-  href="/upgrade"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Nâng cấp gói
-</Link>
-
-<Link
-  href="/settings"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Cài đặt
-</Link>
-
-<Link
-  href="/help"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Trợ giúp
-</Link>
-<Link
-  href="/account"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Thông tin gói cước
-</Link>
-        <div className="border-t"></div>
-
-        <button
-          onClick={handleLogout}
-          className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
+          href="/register"
+          className="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-lg text-lg"
         >
-          Đăng xuất
-        </button>
-      </div>
-    )}
-  </div>
-</div>
-      </div>
+          Đăng ký miễn phí
+        </Link>
 
-      {/* Main */}
-      <div className="flex-1 flex flex-col">
-        
-        {/* Chat area */}
-        <div
-  ref={chatContainerRef}
-  className="flex-1 overflow-y-auto p-6 space-y-4"
->
-          {messages.map((msg: any, index: number) => (
-            <div
-              key={index}
-              className={`max-w-3xl p-4 rounded-lg ${
-                msg.role === "user"
-                  ? "ml-auto bg-[#3E3F4B]"
-                  : "bg-[#444654]"
-              }`}
-            >
-              <span className="font-bold text-green-400">
-                {msg.role === "user" ? "Bạn: " : "AI: "}
-              </span>
+      </section>
 
-              <ReactMarkdown
-                remarkPlugins={[remarkMath]}
-                rehypePlugins={[rehypeKatex]}
-              >
-                {msg.content}
-              </ReactMarkdown>
-            </div>
-          ))}
 
-          {loading && (
-            <div className="bg-green-800 p-4 rounded-lg max-w-3xl">
-              <span className="font-bold text-white">AI:</span> Đang trả lời...
-            </div>
-          )}
-          
-        </div>
+      {/* FOOTER */}
+      <footer className="border-t border-gray-800 py-6 text-center text-gray-500">
+        © 2026 AI Toán Học
+      </footer>
 
-        {/* Input */}
-        <div className="p-4 bg-[#40414F] border-t border-gray-700">
-          <div className="flex gap-2 max-w-3xl mx-auto">
-            
-            <input
-              className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white focus:outline-none"
-              placeholder="Nhập câu hỏi..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSend();
-                }
-              }}
-            />
-            <button
-              onClick={handleSend}
-              className="bg-green-600 px-4 rounded hover:bg-green-700"
-            >
-              Gửi
-            </button>
-          </div>
-        </div>
-      </div>
-      
     </div>
   );
 }
