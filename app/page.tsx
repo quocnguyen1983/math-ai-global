@@ -1,9 +1,36 @@
 "use client";
 
 import Link from "next/link";
-
+import { useState, useEffect } from "react";
 export default function HomePage() {
-  return (
+  const [question, setQuestion] = useState("");
+const [answer, setAnswer] = useState("");
+const [loading, setLoading] = useState(false);
+const [remaining, setRemaining] = useState(3);
+useEffect(() => {
+  const count = Number(localStorage.getItem("demoCount") || 0);
+  setRemaining(3 - count);
+}, []);
+const handleSolve = async () => {
+  if (!question) return;
+  const count = Number(localStorage.getItem("demoCount") || 0);
+  if (count >= 3) {
+    alert("Bạn đã dùng hết 3 lần miễn phí. Hãy đăng ký để tiếp tục sử dụng AI.");
+    window.location.href = "/register";
+    return;
+  }
+  setLoading(true);
+  const res = await fetch("/api/demo", {
+    method: "POST",
+    body: JSON.stringify({ question }),
+  });
+  const data = await res.json();
+  setAnswer(data.answer);
+  localStorage.setItem("demoCount", String(count + 1));
+  setRemaining(3 - (count + 1));
+  setLoading(false);
+};
+    return (
     <div className="min-h-screen bg-[#020617] text-white">
 
       {/* NAVBAR */}
@@ -46,16 +73,51 @@ export default function HomePage() {
         <div className="max-w-2xl mx-auto flex gap-3">
 
           <input
-            placeholder="Ví dụ: Giải phương trình x³ - 3x + 1 = 0"
-            className="flex-1 bg-[#1e293b] border border-gray-700 px-4 py-3 rounded-lg"
-          />
+  value={question}
+  onChange={(e) => setQuestion(e.target.value)}
+  placeholder="Ví dụ: Giải phương trình x³ - 3x + 1 = 0"
+  className="flex-1 bg-[#1e293b] border border-gray-700 px-4 py-3 rounded-lg"
+/>
+<button
+onClick={handleSolve}
+className="bg-green-500 px-6 py-3 rounded-lg text-white"
+>
+Giải ngay
+</button>
+          <p className="text-gray-400 mt-2 text-sm">
+Bạn còn {remaining} lượt dùng miễn phí
+</p>
+        {loading && (
+<p className="text-green-400 mt-4 animate-pulse">
+🤖 AI đang suy nghĩ...
+</p>
+)}
 
-          <Link
-            href="/login"
-            className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg"
-          >
-            Giải ngay
-          </Link>
+{answer && (
+  <div className="max-w-2xl mx-auto mt-8 space-y-4">
+
+    {/* User bubble */}
+    <div className="flex justify-end">
+      <div className="bg-green-500 text-white px-4 py-3 rounded-2xl max-w-[80%]">
+        {question}
+      </div>
+    </div>
+
+    {/* AI bubble */}
+<div className="flex justify-start items-start gap-2">
+
+  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm">
+    AI
+  </div>
+
+  <div className="bg-gray-800 px-4 py-3 rounded-2xl max-w-[80%]">
+    <p className="whitespace-pre-line">{answer}</p>
+  </div>
+
+</div>
+
+  </div>
+)}
 
         </div>
 
