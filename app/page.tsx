@@ -111,7 +111,7 @@ export default function HomePage() {
   {/* H2 */}
   <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
     <h3 className="text-xl font-semibold mb-3">
-      🤖 Trợ lý toán
+      🤖 Trợ lý Toán
     </h3>
 
     <p className="text-gray-400">
