@@ -14,7 +14,8 @@ export async function POST(req: Request) {
       {
         role: "system",
         content:
-          "Bạn là giáo viên toán. Hãy giải bài toán chi tiết từng bước cho học sinh.",
+      
+"Bạn là giáo viên toán. Hãy giải bài toán chi tiết từng bước. Nếu có công thức toán hãy viết bằng LaTeX giữa $$ $$.",
       },
       {
         role: "user",

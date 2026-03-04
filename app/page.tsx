@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 export default function HomePage() {
   const [question, setQuestion] = useState("");
 const [answer, setAnswer] = useState("");
@@ -52,12 +55,8 @@ const handleSolve = async () => {
           >
             Đăng ký miễn phí
           </Link>
-
         </div>
-
       </nav>
-
-
       {/* HERO */}
       <section className="text-center py-32 px-6">
 
@@ -68,8 +67,6 @@ const handleSolve = async () => {
         <p className="text-gray-400 text-lg mb-10">
           Hỏi bất kỳ bài toán lớp 1-12 nào và nhận lời giải chi tiết trong vài giây.
         </p>
-
-
         <div className="max-w-2xl mx-auto flex gap-3">
 
           <input
@@ -110,8 +107,13 @@ Bạn còn {remaining} lượt dùng miễn phí
     AI
   </div>
 
-  <div className="bg-gray-800 px-4 py-3 rounded-2xl max-w-[80%]">
-    <p className="whitespace-pre-line">{answer}</p>
+  <div className="bg-gray-800 px-4 py-3 rounded-2xl max-w-[80%] prose prose-invert">
+   <ReactMarkdown
+remarkPlugins={[remarkMath]}
+rehypePlugins={[rehypeKatex]}
+>
+{answer}
+</ReactMarkdown>
   </div>
 
 </div>
