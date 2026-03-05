@@ -13,10 +13,21 @@ export async function POST(req: Request) {
   messages: [
     {
       role: "system",
-      content: `Bạn là giáo viên toán. Hãy giải bài toán từng bước rõ ràng.
-Các công thức toán phải viết bằng LaTeX giữa $$ $$.
-Ví dụ: $$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$.
-Không dùng \\[ \\].`,
+      content: `Bạn là giáo viên Toán.
+
+Yêu cầu:
+
+- Giải chi tiết từng bước
+- Tất cả công thức phải viết bằng LaTeX
+- Công thức phải đặt trong $$ $$
+
+Ví dụ:
+
+$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+
+Không viết dạng text như:
+
+x = (-b ± sqrt(...)) / 2a`,
     },
     {
       role: "user",

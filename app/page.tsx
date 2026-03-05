@@ -105,11 +105,33 @@ const handleSolve = async () => {
 
 
   {/* Lời giải */}
-  {answer && (
-    <div className="answer-box">
-      {answer}
-    </div>
-  )}
+{(answer || loading) && (
+  <div className="answer-box">
+
+    {loading ? (
+
+      <p className="text-green-400 animate-pulse">
+        🤖 AI đang trả lời...
+      </p>
+
+    ) : (
+
+      <ReactMarkdown
+        remarkPlugins={[remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+        components={{
+          p({ children }) {
+            return <p className="my-2">{children}</p>;
+          },
+        }}
+      >
+        {answer}
+      </ReactMarkdown>
+
+    )}
+
+  </div>
+)}
 
 
   {/* Nút tiếp tục */}
