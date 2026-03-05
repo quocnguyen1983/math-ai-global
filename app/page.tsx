@@ -130,7 +130,32 @@ const handleSolve = async () => {
       </section>
     {/* MORE FEATURES */}
 <section className="grid md:grid-cols-3 gap-8 px-10 py-10 max-w-6xl mx-auto">
+  <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+          <h3 className="text-xl font-semibold mb-3">
+            ⚡ Giải nhanh
+          </h3>
+          <p className="text-gray-400">
+            AI giải bài toán trong vài giây.
+          </p>
+        </div>
 
+        <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+          <h3 className="text-xl font-semibold mb-3">
+            📚 Giải chi tiết
+          </h3>
+          <p className="text-gray-400">
+            Phân tích từng bước dễ hiểu.
+          </p>
+        </div>
+
+        <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
+          <h3 className="text-xl font-semibold mb-3">
+            🎯 Chuẩn chương trình
+          </h3>
+          <p className="text-gray-400">
+            Phù hợp chương trình Toán lớp 12.
+          </p>
+        </div>
   {/* H1 */}
   <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
     <h3 className="text-xl font-semibold mb-3">
