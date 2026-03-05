@@ -10,3 +10,83 @@ nextjs-portal {
 .katex {
   font-size: 1.2rem;
 }
+.container{
+  width:900px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:25px;
+}
+
+
+/* hàng đầu */
+.top-row{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  align-items:center;
+}
+
+
+/* ô nhập */
+.math-input{
+  width:400px;
+  padding:14px;
+  border-radius:12px;
+  border:2px solid #44c25a;
+  font-size:18px;
+}
+
+
+/* nút giải */
+.solve-btn{
+  padding:14px 25px;
+  background:#44c25a;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+  color:white;
+  cursor:pointer;
+}
+
+
+/* lượt miễn phí */
+.free-count{
+  border:2px solid #44c25a;
+  padding:14px 18px;
+  border-radius:12px;
+}
+
+
+/* khung bài toán */
+.question-box{
+  border:2px solid #44c25a;
+  padding:20px;
+  border-radius:12px;
+  font-size:20px;
+  width:100%;
+}
+
+
+/* khung lời giải */
+.answer-box{
+  border:2px solid #44c25a;
+  padding:25px;
+  border-radius:12px;
+  width:100%;
+  line-height:1.7;
+}
+
+
+/* nút tiếp tục */
+.continue-btn{
+  width:200px;
+  margin:auto;
+  padding:15px;
+  background:#44c25a;
+  border:none;
+  border-radius:12px;
+  font-size:18px;
+  color:white;
+  cursor:pointer;
+}

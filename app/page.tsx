@@ -10,12 +10,20 @@ export default function HomePage() {
 const [answer, setAnswer] = useState("");
 const [loading, setLoading] = useState(false);
 const [remaining, setRemaining] = useState(3);
+const [input, setInput] = useState("");
+const [freeCount, setFreeCount] = useState(3);
+
+const handleContinue = () => {
+  setAnswer("")
+  setQuestion("")
+  setInput("")
+};
 useEffect(() => {
   const count = Number(localStorage.getItem("demoCount") || 0);
   setRemaining(3 - count);
 }, []);
 const handleSolve = async () => {
-  if (!question) return;
+  if (!input) return;
   const count = Number(localStorage.getItem("demoCount") || 0);
   if (count >= 3) {
     alert("Bạn đã dùng hết 3 lần miễn phí. Hãy đăng ký để tiếp tục sử dụng AI.");
@@ -25,7 +33,7 @@ const handleSolve = async () => {
   setLoading(true);
   const res = await fetch("/api/demo", {
     method: "POST",
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question: input }),
   });
   const data = await res.json();
   setAnswer(data.answer);
@@ -67,112 +75,57 @@ const handleSolve = async () => {
         <p className="text-gray-400 text-lg mb-10">
           Hỏi bất kỳ bài toán lớp 1-12 nào và nhận lời giải chi tiết trong vài giây.
         </p>
-        <div className="max-w-2xl mx-auto flex gap-3">
+        <div className="container">
 
-          <input
-  value={question}
-  onChange={(e) => setQuestion(e.target.value)}
-  placeholder="Ví dụ: Giải phương trình x³ - 3x + 1 = 0"
-  className="flex-1 bg-[#1e293b] border border-gray-700 px-4 py-3 rounded-lg"
-/>
-<button
-onClick={handleSolve}
-className="bg-green-500 px-6 py-3 rounded-lg text-white"
->
-Giải ngay
-</button>
-          <p className="text-gray-400 mt-2 text-sm">
-Bạn còn {remaining} lượt dùng miễn phí
-</p>
-        {loading && (
-<p className="text-green-400 mt-4 animate-pulse">
-🤖 AI đang suy nghĩ...
-</p>
-)}
+  {/* Hàng 1 */}
+  <div className="top-row">
+    <input
+      className="math-input"
+      placeholder="Ô nhập nội dung bài toán"
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+    />
 
-{answer && (
-<div className="max-w-3xl mx-auto mt-16 space-y-8">
+    <button className="solve-btn" onClick={handleSolve}>
+      Giải ngay
+    </button>
 
-  {/* Question */}
-  <div className="border border-green-500 rounded-xl p-6 text-center">
-    <p className="text-lg">
-      <b>Giải phương trình:</b> {question}
-    </p>
+    <div className="free-count">
+      Bạn còn {remaining} lượt dùng miễn phí
+    </div>
   </div>
 
-  {/* Arrow */}
-  <div className="text-center text-green-400 text-2xl">
-    ↓
-  </div>
 
-  {/* AI Answer */}
-  <div className="border border-green-500 rounded-xl p-8 bg-[#1e293b]">
+  {/* Bài toán */}
+  {question && (
+    <div className="question-box">
+      {question}
+    </div>
+  )}
 
-    <p className="text-green-400 font-semibold mb-4">
-      AI: Phần lời giải
-    </p>
 
-    <ReactMarkdown
-      remarkPlugins={[remarkMath]}
-      rehypePlugins={[rehypeKatex]}
-    >
+  {/* Lời giải */}
+  {answer && (
+    <div className="answer-box">
       {answer}
-    </ReactMarkdown>
+    </div>
+  )}
 
+
+  {/* Nút tiếp tục */}
+  {/* Nút tiếp tục */}
+{answer && (
+  <div className="text-center mt-8">
+    <button
+      className="continue-btn"
+      onClick={handleContinue}
+    >
+      Tiếp tục
+    </button>
   </div>
-
-</div>
 )}
-<div className="text-center mt-8">
-
-<button
-onClick={()=>{
-setAnswer("")
-setQuestion("")
-}}
-className="bg-green-500 hover:bg-green-600 px-8 py-3 rounded-lg text-white"
->
-
-Tiếp tục
-
-</button>
 
 </div>
-
-        </div>
-
-      </section>
-
-
-      {/* FEATURES */}
-      <section className="grid md:grid-cols-3 gap-8 px-10 py-16 max-w-6xl mx-auto">
-
-        <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
-          <h3 className="text-xl font-semibold mb-3">
-            ⚡ Giải nhanh
-          </h3>
-          <p className="text-gray-400">
-            AI giải bài toán trong vài giây.
-          </p>
-        </div>
-
-        <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
-          <h3 className="text-xl font-semibold mb-3">
-            📚 Giải chi tiết
-          </h3>
-          <p className="text-gray-400">
-            Phân tích từng bước dễ hiểu.
-          </p>
-        </div>
-
-        <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
-          <h3 className="text-xl font-semibold mb-3">
-            🎯 Chuẩn chương trình
-          </h3>
-          <p className="text-gray-400">
-            Phù hợp chương trình Toán lớp 1-12.
-          </p>
-        </div>
 
       </section>
     {/* MORE FEATURES */}
