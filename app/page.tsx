@@ -91,35 +91,53 @@ Bạn còn {remaining} lượt dùng miễn phí
 )}
 
 {answer && (
-  <div className="max-w-2xl mx-auto mt-8 space-y-4">
+<div className="max-w-3xl mx-auto mt-16 space-y-8">
 
-    {/* User bubble */}
-    <div className="flex justify-end">
-      <div className="bg-green-500 text-white px-4 py-3 rounded-2xl max-w-[80%]">
-        {question}
-      </div>
-    </div>
-
-    {/* AI bubble */}
-<div className="flex justify-start items-start gap-2">
-
-  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm">
-    AI
+  {/* Question */}
+  <div className="border border-green-500 rounded-xl p-6 text-center">
+    <p className="text-lg">
+      <b>Giải phương trình:</b> {question}
+    </p>
   </div>
 
-  <div className="bg-gray-800 px-4 py-3 rounded-2xl max-w-[80%] prose prose-invert">
-   <ReactMarkdown
-remarkPlugins={[remarkMath]}
-rehypePlugins={[rehypeKatex]}
->
-{answer}
-</ReactMarkdown>
+  {/* Arrow */}
+  <div className="text-center text-green-400 text-2xl">
+    ↓
+  </div>
+
+  {/* AI Answer */}
+  <div className="border border-green-500 rounded-xl p-8 bg-[#1e293b]">
+
+    <p className="text-green-400 font-semibold mb-4">
+      AI: Phần lời giải
+    </p>
+
+    <ReactMarkdown
+      remarkPlugins={[remarkMath]}
+      rehypePlugins={[rehypeKatex]}
+    >
+      {answer}
+    </ReactMarkdown>
+
   </div>
 
 </div>
-
-  </div>
 )}
+<div className="text-center mt-8">
+
+<button
+onClick={()=>{
+setAnswer("")
+setQuestion("")
+}}
+className="bg-green-500 hover:bg-green-600 px-8 py-3 rounded-lg text-white"
+>
+
+Tiếp tục
+
+</button>
+
+</div>
 
         </div>
 
