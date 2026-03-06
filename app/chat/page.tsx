@@ -42,6 +42,7 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
+  const [pastedImage, setPastedImage] = useState<string | null>(null);
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [user, setUser] = useState<any>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -86,6 +87,29 @@ export default function Home() {
   });
 
   e.target.value = ""; // reset input
+};
+const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+
+  const items = e.clipboardData.items;
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+
+    if (item.type.indexOf("image") !== -1) {
+
+      const file = item.getAsFile();
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        setPastedImage(reader.result as string);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
 };
 useEffect(() => {
   const fetchUser = async () => {
@@ -167,6 +191,7 @@ useEffect(() => {
   })
 );
 setInput("");
+setPastedImage(null);
 
     setLoading(true);
 
@@ -176,7 +201,7 @@ setInput("");
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
   message: input,
-  image: messages[messages.length - 1]?.image || null
+  image: pastedImage
 }),
       });
 
@@ -374,11 +399,12 @@ const handleLogout = async () => {
 type="file"
 accept="image/*,.pdf,.doc,.docx"
 onChange={handleFileUpload}
-className="text-sm"
+className="hidden"
 />
             <textarea
 value={input}
 onChange={(e) => setInput(e.target.value)}
+onPaste={handlePaste}
 placeholder="Nhập câu hỏi..."
 rows={1}
 
