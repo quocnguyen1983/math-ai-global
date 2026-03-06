@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Graph from "@/components/Graph"
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -169,7 +170,10 @@ setInput("");
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({
+  message: input,
+  image: messages[messages.length - 1]?.image || null
+}),
       });
 
       const data = await res.json();
@@ -343,6 +347,11 @@ const handleLogout = async () => {
               >
                 {msg.content}
               </ReactMarkdown>
+              {/* VẼ ĐỒ THỊ */}
+    {msg.role === "assistant" &&
+      msg.content.includes("y =") && (
+        <Graph equation={msg.content.split("y =")[1]} />
+      )}
             </div>
           ))}
 
@@ -357,7 +366,12 @@ const handleLogout = async () => {
         {/* Input */}
         <div className="p-4 bg-[#40414F] border-t border-gray-700">
           <div className="flex gap-2 max-w-3xl mx-auto">
-            
+            <input
+type="file"
+accept="image/*,.pdf,.doc,.docx"
+onChange={handleFileUpload}
+className="text-sm"
+/>
             <textarea
 value={input}
 onChange={(e) => setInput(e.target.value)}

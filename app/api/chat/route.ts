@@ -31,7 +31,7 @@ if (!user) {
   return NextResponse.json({ error: "User không tồn tại" }, { status: 404 });
 }
   try {
-    const { message } = await req.json();
+    const { message, image } = await req.json();
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -42,9 +42,37 @@ Bạn là AI toán học.
 Khi viết công thức toán, LUÔN đặt công thức trong dấu $$ $$.
 Ví dụ:
 $$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+Nếu người dùng yêu cầu vẽ đồ thị,
+hãy luôn viết phương trình rõ ràng theo dạng:
+
+y = ...
+
+Ví dụ:
+
+y = x^2
+y = 3x^3 - 2x + 1
+y = sin(x)
+
+Chỉ cần viết đúng dạng y = ... để hệ thống có thể vẽ đồ thị.
 `
 },
-        { role: "user", content: message },
+        image
+  ? {
+      role: "user",
+      content: [
+        {
+          type: "text",
+          text: message || "Giải bài toán trong ảnh",
+        },
+        {
+          type: "image_url",
+          image_url: {
+            url: image,
+          },
+        },
+      ],
+    }
+  : { role: "user", content: message },
       ],
     });
     const usedTokens = completion.usage?.total_tokens || 0;
