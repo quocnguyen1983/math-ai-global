@@ -36,16 +36,16 @@ router.push("/chat");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-indigo-500 to-purple-600">
-      <div className="bg-white p-8 rounded-2xl shadow-2xl w-96">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Login
+    <div className="min-h-screen flex items-center justify-center bg-[#020617] text-white">
+      <div className="bg-[#1e293b] pt-6 pb-12 px-10 rounded-xl shadow-lg w-105 mx-auto flex flex-col gap-6">
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Đăng nhập
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* USERNAME */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="text-white font-medium">
               Username
             </label>
             <input
@@ -53,16 +53,13 @@ router.push("/chat");
               placeholder="Nhập email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg
-                         text-gray-800 bg-white
-                         focus:outline-none focus:ring-2
-                         focus:ring-indigo-500"
+              className="w-full bg-[#020617] border border-green-500 px-4 py-3 rounded-lg text-white outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
           {/* PASSWORD */}
           <div className="relative">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="text-white font-medium">
               Password
             </label>
 
@@ -71,10 +68,7 @@ router.push("/chat");
               placeholder="Nhập mật khẩu..."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg
-                         text-gray-800 bg-white
-                         focus:outline-none focus:ring-2
-                         focus:ring-indigo-500"
+              className="w-full bg-[#020617] border border-green-500 px-4 py-3 rounded-lg text-white outline-none focus:ring-2 focus:ring-green-500"
             />
 
             {/* Show / Hide Icon */}
@@ -94,11 +88,9 @@ router.push("/chat");
 
           <button
             type="submit"
-            className="w-full py-2 rounded-lg text-white font-semibold
-                       bg-linear-to-r from-indigo-500 to-purple-600
-                       hover:opacity-90 transition"
+            className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold w-1/2 mt-6 mx-auto block"
           >
-            Login
+            Đăng nhập
           </button>
         </form>
       </div>

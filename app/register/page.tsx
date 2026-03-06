@@ -34,8 +34,8 @@ else {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-blue-500 to-purple-600">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-96">
+    <div className="min-h-screen flex items-center justify-center bg-[#020617] text-white">
+      <div className="bg-[#1e293b] p-8 rounded-xl shadow-lg w-96">
 
         {/* Title */}
         <h2 className="text-2xl font-bold text-center mb-6">
@@ -48,13 +48,13 @@ else {
 )}
         {/* Email */}
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium  text-gray-700 mb-">
+         <label className="text-white font-medium">
             Email
           </label>
           <input
             type="email"
             placeholder="Nhập email..."
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+            className="w-full bg-[#020617] border border-green-500 px-4 py-3 rounded-lg text-white outline-none focus:ring-2 focus:ring-green-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -62,13 +62,13 @@ else {
 
         {/* Password */}
         <div className="mb-6 relative">
-          <label className="block mb-2 text-sm font-medium text-gray-700 mb-">
+          <label className="text-white font-medium">
             Password
           </label>
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Nhập mật khẩu..."
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+            className="w-full bg-[#020617] border border-green-500 px-4 py-3 rounded-lg text-white outline-none focus:ring-2 focus:ring-green-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -85,7 +85,7 @@ else {
         {/* Button */}
         <button
           onClick={handleRegister}
-          className="w-full bg-linear-to-r from-blue-500 to-purple-600 text-white p-3 rounded-lg font-semibold hover:opacity-90 transition"
+          className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold w-full mt-6"
         >
           Đăng ký
         </button>
@@ -95,7 +95,7 @@ else {
           Đã có tài khoản?{" "}
           <button
             onClick={() => router.push("/login")}
-            className="w-full bg-linear-to-r from-blue-500 to-purple-600 text-white p-3 rounded-lg font-semibold hover:opacity-90 transition"
+            className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold w-full mt-6"
         >
           
             Đăng nhập
