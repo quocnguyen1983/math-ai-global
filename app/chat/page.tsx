@@ -84,10 +84,10 @@ export default function Home() {
 };
 useEffect(() => {
   const fetchUser = async () => {
-    const res = await fetch("/api/me");
-    const data = await res.json();
-    setUser(data);
-  };
+  const res = await fetch(`${window.location.origin}/api/me`);
+  const data = await res.json();
+  setUser(data);
+};
 
   fetchUser();
 }, []);
