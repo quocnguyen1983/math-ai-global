@@ -22,6 +22,7 @@ type Chat = {
   messages: Message[];
 };
 export default function Home() {
+  const [question, setQuestion] = useState("");
   const [chats, setChats] = useState<any[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const handleNewChat = () => {
@@ -358,17 +359,19 @@ const handleLogout = async () => {
         <div className="p-4 bg-[#40414F] border-t border-gray-700">
           <div className="flex gap-2 max-w-3xl mx-auto">
             
-            <input
-              className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white focus:outline-none"
-              placeholder="Nhập câu hỏi..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSend();
-                }
-              }}
-            />
+            <textarea
+value={question}
+onChange={(e) => setQuestion(e.target.value)}
+placeholder="Nhập câu hỏi..."
+className="flex-1 bg-[#1e293b] border border-gray-700 px-4 py-3 rounded-lg resize-none text-white"
+rows={2}
+onKeyDown={(e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
+}}
+/>
             <button
               onClick={handleSend}
               className="bg-green-600 px-4 rounded hover:bg-green-700"
