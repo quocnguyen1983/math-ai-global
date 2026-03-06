@@ -358,17 +358,26 @@ const handleLogout = async () => {
         <div className="p-4 bg-[#40414F] border-t border-gray-700">
           <div className="flex gap-2 max-w-3xl mx-auto">
             
-            <input
-              className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white focus:outline-none"
-              placeholder="Nhập câu hỏi..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSend();
-                }
-              }}
-            />
+            <textarea
+value={input}
+onChange={(e) => setInput(e.target.value)}
+placeholder="Nhập câu hỏi..."
+rows={1}
+
+className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white resize-none focus:outline-none"
+
+onInput={(e:any)=>{
+e.target.style.height="auto"
+e.target.style.height=e.target.scrollHeight+"px"
+}}
+
+onKeyDown={(e)=>{
+if(e.key==="Enter" && !e.shiftKey){
+e.preventDefault()
+handleSend()
+}
+}}
+/>
             <button
               onClick={handleSend}
               className="bg-green-600 px-4 rounded hover:bg-green-700"
