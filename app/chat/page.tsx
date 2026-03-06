@@ -1,11 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
-
-const Graph = dynamic(() => import("@/components/Graph"), {
-  ssr: false,
-});
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -42,7 +37,6 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
-  const [pastedImage, setPastedImage] = useState<string | null>(null);
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [user, setUser] = useState<any>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -87,29 +81,6 @@ export default function Home() {
   });
 
   e.target.value = ""; // reset input
-};
-const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-
-  const items = e.clipboardData.items;
-
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-
-    if (item.type.indexOf("image") !== -1) {
-
-      const file = item.getAsFile();
-      if (!file) return;
-
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        setPastedImage(reader.result as string);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
-
 };
 useEffect(() => {
   const fetchUser = async () => {
@@ -191,7 +162,6 @@ useEffect(() => {
   })
 );
 setInput("");
-setPastedImage(null);
 
     setLoading(true);
 
@@ -199,10 +169,7 @@ setPastedImage(null);
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-  message: input,
-  image: pastedImage
-}),
+        body: JSON.stringify({ message: input }),
       });
 
       const data = await res.json();
@@ -376,11 +343,6 @@ const handleLogout = async () => {
               >
                 {msg.content}
               </ReactMarkdown>
-              {/* VẼ ĐỒ THỊ */}
-    {msg.role === "assistant" &&
-      msg.content.includes("y =") && (
-        <Graph equation={msg.content.split("y =")[1]} />
-      )}
             </div>
           ))}
 
@@ -395,33 +357,18 @@ const handleLogout = async () => {
         {/* Input */}
         <div className="p-4 bg-[#40414F] border-t border-gray-700">
           <div className="flex gap-2 max-w-3xl mx-auto">
+            
             <input
-type="file"
-accept="image/*,.pdf,.doc,.docx"
-onChange={handleFileUpload}
-className="hidden"
-/>
-            <textarea
-value={input}
-onChange={(e) => setInput(e.target.value)}
-onPaste={handlePaste}
-placeholder="Nhập câu hỏi..."
-rows={1}
-
-className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white resize-none focus:outline-none"
-
-onInput={(e:any)=>{
-e.target.style.height="auto"
-e.target.style.height=e.target.scrollHeight+"px"
-}}
-
-onKeyDown={(e)=>{
-if(e.key==="Enter" && !e.shiftKey){
-e.preventDefault()
-handleSend()
-}
-}}
-/>
+              className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white focus:outline-none"
+              placeholder="Nhập câu hỏi..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSend();
+                }
+              }}
+            />
             <button
               onClick={handleSend}
               className="bg-green-600 px-4 rounded hover:bg-green-700"
