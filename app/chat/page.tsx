@@ -186,8 +186,9 @@ setInput("");
             : chat
         )
       );
+      setGraphData(null);
       const func = extractFunction(aiMessage.content);
-
+      console.log("Function detected:", func);
 if (func) {
   setTimeout(() => {
     drawFunctionGraph(func);
@@ -212,8 +213,14 @@ function drawFunctionGraph(expression: string) {
     const yValues = [];
 
     for (let x = -10; x <= 10; x += 0.1) {
-      xValues.push(x);
-      yValues.push(expr.evaluate({ x }));
+
+      const y = expr.evaluate({ x });
+
+      if (!isNaN(y) && isFinite(y)) {
+        xValues.push(x);
+        yValues.push(y);
+      }
+
     }
 
     setGraphData({
@@ -222,24 +229,34 @@ function drawFunctionGraph(expression: string) {
     });
 
   } catch (error) {
-    console.log("Không vẽ được đồ thị");
+    console.log("Không vẽ được đồ thị", error);
   }
 }
 function extractFunction(text: string) {
 
-  const regex = /y\s*=\s*([0-9x+\-*/^(). ]+)/i;
+  const regex = /(y\s*=|f\(x\)\s*=)\s*([^)\n]+)/i;
 
   const match = text.match(regex);
 
   if (!match) return null;
 
-  let func = match[1];
+  let func = match[2];
 
+  // ^ -> **
   func = func.replace(/\^/g, "**");
 
-  func = func.replace(/\)/g, "");
+  // 3x -> 3*x
+  func = func.replace(/(\d)x/g, "$1*x");
 
-  return func.trim();
+  // x(x+1) -> x*(x+1)
+  func = func.replace(/x\(/g, "x*(");
+
+  // )( -> )*(
+  func = func.replace(/\)\(/g, ")*(");
+
+  func = func.trim();
+
+  return func;
 }
   return (
      <div className="relative flex h-screen w-screen bg-[#343541] text-white overflow-hidden">
