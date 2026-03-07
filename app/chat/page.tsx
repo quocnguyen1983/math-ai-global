@@ -2,9 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-const [graphData, setGraphData] = useState<any>(null);
 import { compile } from "mathjs";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -27,6 +25,7 @@ type Chat = {
   messages: Message[];
 };
 export default function Home() {
+  const [graphData, setGraphData] = useState<any>(null);
   const [chats, setChats] = useState<any[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const handleNewChat = () => {
