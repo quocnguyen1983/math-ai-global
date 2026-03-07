@@ -26,6 +26,7 @@
     "openai": "^6.21.0",
     "pg": "^8.19.0",
     "plotly.js-dist": "^3.4.0",
+    "plotly.js-dist-min": "^3.4.0",
     "prisma": "^5.22.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
