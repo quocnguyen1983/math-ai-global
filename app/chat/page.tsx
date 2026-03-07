@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Plotly from "plotly.js-dist";
+import Plotly from "plotly.js-dist-min";
 import { compile } from "mathjs";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -204,62 +204,32 @@ const handleLogout = async () => {
 };
 function drawFunctionGraph(expression: string) {
 
+  if (typeof window === "undefined") return;
+
   try {
 
     const expr = compile(expression);
 
-    const xValues = [];
-    const yValues = [];
+    const xValues: number[] = [];
+    const yValues: number[] = [];
 
     for (let x = -10; x <= 10; x += 0.1) {
-
       xValues.push(x);
-
-      const y = expr.evaluate({ x });
-
-      yValues.push(y);
-
+      yValues.push(expr.evaluate({ x }));
     }
 
-    const data = [
+    Plotly.newPlot("math-chart", [
       {
         x: xValues,
         y: yValues,
         type: "scatter",
-        mode: "lines",
-        line: {
-          color: "#2563eb",
-          width: 3
-        }
+        mode: "lines"
       }
-    ];
-
-    const layout = {
-
-      title: "Đồ thị hàm số",
-
-      xaxis: {
-        title: "x",
-        zeroline: true
-      },
-
-      yaxis: {
-        title: "y",
-        zeroline: true
-      },
-
-      margin: { t: 40 }
-
-    };
-
-    Plotly.newPlot("math-chart", data, layout);
+    ]);
 
   } catch (error) {
-
     console.log("Không vẽ được đồ thị");
-
   }
-
 }
 function extractFunction(text: string) {
 
