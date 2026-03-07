@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+const [graphData, setGraphData] = useState<any>(null);
 import { compile } from "mathjs";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -205,11 +206,7 @@ const handleLogout = async () => {
   window.location.href = "/";
 };
 function drawFunctionGraph(expression: string) {
-
-  if (typeof window === "undefined") return;
-
   try {
-
     const expr = compile(expression);
 
     const xValues: number[] = [];
@@ -220,6 +217,10 @@ function drawFunctionGraph(expression: string) {
       yValues.push(expr.evaluate({ x }));
     }
 
+    setGraphData({
+      x: xValues,
+      y: yValues
+    });
 
   } catch (error) {
     console.log("Không vẽ được đồ thị");
@@ -400,15 +401,34 @@ function extractFunction(text: string) {
               <span className="font-bold text-white">AI:</span> Đang trả lời...
             </div>
           )}
-          <div
-  id="math-chart"
-  style={{
-    width: "100%",
-    height: "450px",
-    marginTop: "20px",
-    background: "#ffffff"
-  }}
-></div>
+          {graphData && (
+  <div
+    style={{
+      width: "100%",
+      height: "450px",
+      marginTop: "20px",
+      background: "#ffffff"
+    }}
+  >
+    <Plot
+      data={[
+        {
+          x: graphData.x,
+          y: graphData.y,
+          type: "scatter",
+          mode: "lines",
+          line: { color: "#2563eb" }
+        }
+      ]}
+      layout={{
+  title: { text: "Đồ thị hàm số" },
+  xaxis: { title: { text: "x" } },
+  yaxis: { title: { text: "y" } }
+}}
+      style={{ width: "100%", height: "100%" }}
+    />
+  </div>
+)}
         </div>
           
         <div className="p-4 bg-[#40414F] border-t border-gray-700">
