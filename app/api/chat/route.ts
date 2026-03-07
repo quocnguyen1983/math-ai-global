@@ -52,6 +52,21 @@ Ví dụ:
 y = x^2 - 3x + 1
 
 Luôn trình bày lời giải rõ ràng từng bước.
+Khi viết công thức toán hoặc bảng Latex phải đặt trong:
+
+$$
+...
+$$
+$$
+\begin{matrix}{c|c}
+x & y \\
+-2 & -35 \\
+-1 & -7 \\
+0 & -1 \\
+1 & 1 \\
+2 & 17
+\end{array}
+$$
 `
 },
         { role: "user", content: message },

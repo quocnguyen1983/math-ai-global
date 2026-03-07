@@ -179,7 +179,6 @@ setInput("");
       const data = await res.json();
 
       const aiMessage = { role: "assistant", content: data.reply };
-
       setChats(prev =>
         prev.map(chat =>
           chat.id === currentChatId
@@ -206,10 +205,11 @@ const handleLogout = async () => {
 };
 function drawFunctionGraph(expression: string) {
   try {
+
     const expr = compile(expression);
 
-    const xValues: number[] = [];
-    const yValues: number[] = [];
+    const xValues = [];
+    const yValues = [];
 
     for (let x = -10; x <= 10; x += 0.1) {
       xValues.push(x);
@@ -227,21 +227,19 @@ function drawFunctionGraph(expression: string) {
 }
 function extractFunction(text: string) {
 
-  const regex = /y\s*=\s*([^\n]+)/;
+  const regex = /y\s*=\s*([0-9x+\-*/^(). ]+)/i;
 
   const match = text.match(regex);
 
-  if (match) {
+  if (!match) return null;
 
-    return match[1]
-      .replace(/\^/g, "**")
-      .replace(/sin/g, "sin")
-      .replace(/cos/g, "cos")
-      .replace(/tan/g, "tan");
+  let func = match[1];
 
-  }
+  func = func.replace(/\^/g, "**");
 
-  return null;
+  func = func.replace(/\)/g, "");
+
+  return func.trim();
 }
   return (
      <div className="relative flex h-screen w-screen bg-[#343541] text-white overflow-hidden">
