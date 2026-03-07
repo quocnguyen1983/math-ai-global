@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Plotly from "plotly.js-dist-min";
+import dynamic from "next/dynamic";
+
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { compile } from "mathjs";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -218,14 +220,6 @@ function drawFunctionGraph(expression: string) {
       yValues.push(expr.evaluate({ x }));
     }
 
-    Plotly.newPlot("math-chart", [
-      {
-        x: xValues,
-        y: yValues,
-        type: "scatter",
-        mode: "lines"
-      }
-    ]);
 
   } catch (error) {
     console.log("Không vẽ được đồ thị");
