@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Plotly from "plotly.js-dist";
+import { compile } from "mathjs";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -183,7 +185,13 @@ setInput("");
             : chat
         )
       );
+      const func = extractFunction(aiMessage.content);
 
+if (func) {
+  setTimeout(() => {
+    drawFunctionGraph(func);
+  }, 300);
+}
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -194,6 +202,83 @@ const handleLogout = async () => {
   await fetch("/api/logout", { method: "POST" });
   window.location.href = "/";
 };
+function drawFunctionGraph(expression: string) {
+
+  try {
+
+    const expr = compile(expression);
+
+    const xValues = [];
+    const yValues = [];
+
+    for (let x = -10; x <= 10; x += 0.1) {
+
+      xValues.push(x);
+
+      const y = expr.evaluate({ x });
+
+      yValues.push(y);
+
+    }
+
+    const data = [
+      {
+        x: xValues,
+        y: yValues,
+        type: "scatter",
+        mode: "lines",
+        line: {
+          color: "#2563eb",
+          width: 3
+        }
+      }
+    ];
+
+    const layout = {
+
+      title: "Đồ thị hàm số",
+
+      xaxis: {
+        title: "x",
+        zeroline: true
+      },
+
+      yaxis: {
+        title: "y",
+        zeroline: true
+      },
+
+      margin: { t: 40 }
+
+    };
+
+    Plotly.newPlot("math-chart", data, layout);
+
+  } catch (error) {
+
+    console.log("Không vẽ được đồ thị");
+
+  }
+
+}
+function extractFunction(text: string) {
+
+  const regex = /y\s*=\s*([^\n]+)/;
+
+  const match = text.match(regex);
+
+  if (match) {
+
+    return match[1]
+      .replace(/\^/g, "**")
+      .replace(/sin/g, "sin")
+      .replace(/cos/g, "cos")
+      .replace(/tan/g, "tan");
+
+  }
+
+  return null;
+}
   return (
      <div className="relative flex h-screen w-screen bg-[#343541] text-white overflow-hidden">
       
@@ -351,9 +436,17 @@ const handleLogout = async () => {
               <span className="font-bold text-white">AI:</span> Đang trả lời...
             </div>
           )}
-          
+          <div
+  id="math-chart"
+  style={{
+    width: "100%",
+    height: "450px",
+    marginTop: "20px",
+    background: "#ffffff"
+  }}
+></div>
         </div>
-
+          
         <div className="p-4 bg-[#40414F] border-t border-gray-700">
   <div className="flex gap-2 max-w-3xl mx-auto">
 
