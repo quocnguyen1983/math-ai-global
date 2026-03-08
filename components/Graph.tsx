@@ -1,42 +1,34 @@
-"use client";
+"use client"
 
-import { useEffect, useRef } from "react";
-import functionPlot from "function-plot";
+import { useEffect, useRef } from "react"
+import functionPlot from "function-plot"
 
 export default function Graph({ equation }: any) {
-  const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!ref.current) return;
+const ref = useRef<HTMLDivElement | null>(null)
 
-    try {
+useEffect(()=>{
 
-      // 🔧 Làm sạch biểu thức
-      let clean = equation
-        .replace(/\$\$/g, "")        // bỏ $$
-        .replace(/\\/g, "")          // bỏ \
-        .replace(/y\s*=\s*/g, "")    // bỏ y =
-        .replace(/(\d)x/g, "$1*x")   // 3x -> 3*x
-        .replace(/\^/g, "**")        // ^ -> **
-        .trim();
+if (!ref.current) return
 
-      functionPlot({
-        target: ref.current,
-        width: 500,
-        height: 400,
-        grid: true,
-        data: [
-          {
-            fn: clean,
-          },
-        ],
-      });
+functionPlot({
+target: ref.current,
+width: 500,
+height: 400,
 
-    } catch (err) {
-      console.error("Graph error:", err);
-    }
+grid: true,
+xAxis: { label: "x" },
+yAxis: { label: "y" },
 
-  }, [equation]);
+data: [
+{
+fn: equation
+}
+]
+})
 
-  return <div ref={ref}></div>;
+},[equation])
+
+return <div ref={ref}></div>
+
 }

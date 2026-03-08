@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Graph from "@/components/Graph";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -343,7 +344,11 @@ const handleLogout = async () => {
               >
                 {msg.content}
               </ReactMarkdown>
+              {msg.content.includes("y =") && (
+<Graph equation={msg.content.split("y =")[1]} />
+)}
             </div>
+            
           ))}
 
           {loading && (

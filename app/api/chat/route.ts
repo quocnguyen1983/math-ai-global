@@ -67,6 +67,16 @@ x & y \\
 2 & 17
 \end{array}
 $$
+Nếu bài toán yêu cầu bảng biến thiên, hãy tạo bảng Markdown.
+
+Ví dụ bảng biến thiên:
+
+| x | -∞ | a | b | +∞ |
+|---|----|----|----|----|
+| y' | + | 0 | - | 0 | + |
+| y | -∞ | ↑ | cực đại | ↓ | cực tiểu | ↑ | +∞ |
+
+Luôn trình bày rõ ràng để học sinh dễ hiểu.
 `
 },
         { role: "user", content: message },
