@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { compile } from "mathjs";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -10,18 +9,15 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+
 type Message = {
   role: "user" | "assistant";
   content: string;
-  image?: string;
-  file?: {
-    name: string;
-    url: string;
-  };
   graph?: {
-  x: number[];
-  y: number[];
-};
+    x: number[];
+    y: number[];
+  };
 };
 
 type Chat = {
@@ -29,109 +25,43 @@ type Chat = {
   title: string;
   messages: Message[];
 };
+
 export default function Home() {
-  
-  const [chats, setChats] = useState<any[]>([]);
+
+  const [chats, setChats] = useState<Chat[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  const handleNewChat = () => {
-  const newChat = {
-    id: Date.now().toString(),
-    title: "Cuộc trò chuyện mới",
-    messages: [],
-  };
-
-  setChats(prev => [newChat, ...prev]);
-  setCurrentChatId(newChat.id);
-};
-
-  const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
-  const [openUserMenu, setOpenUserMenu] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (!currentChatId) return;
 
-  const files = e.target.files;
-  if (!files) return;
+  const currentChat = chats.find(c => c.id === currentChatId);
+  const messages = currentChat?.messages || [];
 
-  Array.from(files).forEach((file) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const isImage = file.type.startsWith("image/");
-
-      const newMessage: Message = {
-        role: "user",
-        content: "",
-        ...(isImage
-          ? { image: reader.result as string }
-          : {
-              file: {
-                name: file.name,
-                url: reader.result as string,
-              },
-            }),
-      };
-
-      setChats((prev) =>
-        prev.map((chat) =>
-          chat.id === currentChatId
-            ? {
-                ...chat,
-                messages: [...chat.messages, newMessage],
-              }
-            : chat
-        )
-      );
-    };
-
-    reader.readAsDataURL(file);
-  });
-
-  e.target.value = ""; // reset input
-};
-useEffect(() => {
-  const fetchUser = async () => {
-  const res = await fetch(`${window.location.origin}/api/me`);
-  const data = await res.json();
-  setUser(data);
-};
-
-  fetchUser();
-}, []);
-  // Load localStorage
   useEffect(() => {
-    const savedChats = localStorage.getItem("chats");
-    if (savedChats) {
-      const parsed = JSON.parse(savedChats);
+    const saved = localStorage.getItem("chats");
+    if (saved) {
+      const parsed = JSON.parse(saved);
       setChats(parsed);
-      if (parsed.length > 0) {
-        setCurrentChatId(parsed[0].id);
-      }
+      if (parsed.length > 0) setCurrentChatId(parsed[0].id);
     }
   }, []);
 
-  // Save localStorage
   useEffect(() => {
     localStorage.setItem("chats", JSON.stringify(chats));
   }, [chats]);
-const currentChat = chats.find(chat => chat.id === currentChatId);
-  const messages = currentChat?.messages || [];
-useEffect(() => {
-  if (chatContainerRef.current) {
-    chatContainerRef.current.scrollTop =
-      chatContainerRef.current.scrollHeight;
-  }
-}, [messages, loading]);
 
-  const createNewChat = () => {
-    const newChat = {
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages, loading]);
+
+  const handleNewChat = () => {
+    const newChat: Chat = {
       id: Date.now().toString(),
       title: "Cuộc trò chuyện mới",
-      messages: [
-        { role: "assistant", content: "Chào bạn! Tôi có thể giúp gì?" }
-      ]
+      messages: []
     };
 
     setChats(prev => [newChat, ...prev]);
@@ -145,268 +75,163 @@ useEffect(() => {
   };
 
   const handleSend = async () => {
+
     if (!input || !currentChatId) return;
 
-    const userMessage = { role: "user", content: input };
+    const userMessage: Message = { role: "user", content: input };
 
-    setChats(prevChats =>
-  prevChats.map(chat => {
-    if (chat.id === currentChatId) {
+    setChats(prev =>
+      prev.map(chat =>
+        chat.id === currentChatId
+          ? { ...chat, messages: [...chat.messages, userMessage] }
+          : chat
+      )
+    );
 
-      const updatedMessages = [...chat.messages, userMessage];
-
-      // 👉 Nếu chat chưa có title thực sự
-      const newTitle =
-        chat.messages.length === 0
-          ? userMessage.content.slice(0, 30)
-          : chat.title;
-
-      return {
-        ...chat,
-        messages: updatedMessages,
-        title: newTitle,
-      };
-    }
-    return chat;
-  })
-);
-setInput("");
-
+    setInput("");
     setLoading(true);
 
     try {
+
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: input })
       });
 
       const data = await res.json();
 
-      let graph = null;
+      let graph: { x: number[]; y: number[] } | undefined = undefined;
+      const func = extractFunction(data.reply);
 
-const func = extractFunction(data.reply);
+      if (func) graph = drawGraph(func);
 
-console.log("Function detected:", func);
+      const aiMessage: Message = {
+        role: "assistant",
+        content: data.reply,
+        graph
+      };
 
-if (func) {
-  graph = drawFunctionGraph(func);
-}
+      setChats(prev =>
+        prev.map(chat =>
+          chat.id === currentChatId
+            ? { ...chat, messages: [...chat.messages, aiMessage] }
+            : chat
+        )
+      );
 
-const aiMessage = {
-  role: "assistant",
-  content: data.reply,
-  graph
-};
-
-setChats(prev =>
-  prev.map(chat =>
-    chat.id === currentChatId
-      ? { ...chat, messages: [...chat.messages, aiMessage] }
-      : chat
-  )
-);
       setLoading(false);
+
     } catch (error) {
+
       console.error(error);
       setLoading(false);
+
     }
   };
-const handleLogout = async () => {
-  await fetch("/api/logout", { method: "POST" });
-  window.location.href = "/";
-};
-function drawFunctionGraph(expression: string) {
 
-  try {
+  function drawGraph(expression: string) {
 
-    const expr = compile(expression);
+    try {
 
-    const xValues = [];
-    const yValues = [];
+      const expr = compile(expression);
 
-    for (let x = -10; x <= 10; x += 0.1) {
+      const xValues: number[] = [];
+      const yValues: number[] = [];
 
-      const y = expr.evaluate({ x });
+      for (let x = -10; x <= 10; x += 0.1) {
 
-      if (!isNaN(y) && isFinite(y)) {
-        xValues.push(x);
-        yValues.push(y);
+        const y = expr.evaluate({ x });
+
+        if (!isNaN(y) && isFinite(y)) {
+          xValues.push(x);
+          yValues.push(y);
+        }
+
       }
 
-    }
+      return { x: xValues, y: yValues };
 
-    return {
-      x: xValues,
-      y: yValues
-    };
+    } catch {
 
-  } catch (error) {
+  return undefined;
 
-    console.log("Không vẽ được đồ thị", error);
-
-    return null;
+}
 
   }
 
-}
-function extractFunction(text: string) {
+  function extractFunction(text: string) {
 
-  const regex = /(y\s*=|f\(x\)\s*=)\s*([^)\n]+)/i;
+    const regex = /(y\s*=|f\(x\)\s*=)?\s*([\-0-9xX\^\+\*\/\(\)\s\.]+)/;
 
-  const match = text.match(regex);
+    const match = text.match(regex);
 
-  if (!match) return null;
+    if (!match) return null;
 
-  let func = match[2];
+    let func = match[2];
 
-  // ^ -> **
-  func = func.replace(/\^/g, "**");
+    func = func.replace(/\^/g, "**");
+    func = func.replace(/(\d)x/g, "$1*x");
+    func = func.replace(/x\(/g, "x*(");
+    func = func.replace(/\)\(/g, ")*(");
 
-  // 3x -> 3*x
-  func = func.replace(/(\d)x/g, "$1*x");
+    func = func.trim();
 
-  // x(x+1) -> x*(x+1)
-  func = func.replace(/x\(/g, "x*(");
+    if (!func.includes("x")) return null;
 
-  // )( -> )*(
-  func = func.replace(/\)\(/g, ")*(");
+    return func;
 
-  func = func.trim();
+  }
 
-  return func;
-}
   return (
-     <div className="relative flex h-screen w-screen bg-[#343541] text-white overflow-hidden">
-      
-      {/* Sidebar */}
+
+    <div className="flex h-screen w-screen bg-[#343541] text-white">
+
       <div className="w-64 bg-[#202123] p-4 flex flex-col">
+
         <button
-  onClick={handleNewChat}
-  className="w-full p-2 bg-gray-700 rounded"
->
-  + Cuộc trò chuyện mới
-</button>
+          onClick={handleNewChat}
+          className="w-full p-2 bg-gray-700 rounded"
+        >
+          + Cuộc trò chuyện mới
+        </button>
 
         <button
           onClick={clearAllChats}
-          className="mt-3 bg-[#5C4033] hover:bg-[#4a342a] text-white p-2 rounded transition"
+          className="mt-3 bg-[#5C4033] p-2 rounded"
         >
           Xóa toàn bộ
         </button>
 
         <div className="mt-4 space-y-2 overflow-y-auto">
+
           {chats.map(chat => (
-  <div key={chat.id} className="group relative">
 
-    <button
-      onClick={() => setCurrentChatId(chat.id)}
-      className={`w-full text-left p-2 rounded ${
-        currentChatId === chat.id
-          ? "bg-gray-600"
-          : "bg-gray-700"
-      }`}
-    >
-      {chat.title}
-    </button>
+            <button
+              key={chat.id}
+              onClick={() => setCurrentChatId(chat.id)}
+              className={`w-full text-left p-2 rounded ${
+                currentChatId === chat.id ? "bg-gray-600" : "bg-gray-700"
+              }`}
+            >
+              {chat.title}
+            </button>
 
-    {/* Nút đổi tên */}
-    <button
-      onClick={() => {
-        const newName = prompt("Đổi tên cuộc trò chuyện:", chat.title);
-        if (!newName) return;
-
-        setChats(prev =>
-          prev.map(c =>
-            c.id === chat.id
-              ? { ...c, title: newName }
-              : c
-          )
-        );
-      }}
-      className="absolute right-2 top-2 hidden group-hover:block text-xs"
-    >
-      ✏️
-    </button>
-
-  </div>
-))}
+          ))}
 
         </div>
-{/* User Menu - Bottom Right */}
-<div className="mt-auto relative">
-  <div className="mt-auto pt-4 border-t border-gray-700 relative">
-    {/* User Box */}
-    <div
-  onClick={() => setOpenUserMenu(!openUserMenu)}
-  className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-700"
->
- <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center uppercase font-semibold">
-  {(user?.name || user?.email)?.charAt(0).toUpperCase() || "U"}
-</div>
 
-<span>
-  {user?.name || user?.email?.split("@")[0] || "User"}
-</span>
-</div>
-
-    {/* Dropdown */}
-    {openUserMenu && (
-      <div className="absolute bottom-full mb-2 left-0 w-60 bg-white text-black rounded-lg shadow-lg overflow-hidden z-50">
-        
-        <Link
-  href="/upgrade"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Nâng cấp gói
-</Link>
-
-<Link
-  href="/settings"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Cài đặt
-</Link>
-
-<Link
-  href="/help"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Trợ giúp
-</Link>
-<Link
-  href="/account"
-  onClick={() => setOpenUserMenu(false)}
-  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
->
-  Thông tin gói cước
-</Link>
-        <div className="border-t"></div>
-
-        <button
-          onClick={handleLogout}
-          className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
-        >
-          Đăng xuất
-        </button>
-      </div>
-    )}
-  </div>
-</div>
       </div>
 
-      {/* Main */}
       <div className="flex-1 flex flex-col">
-        
-        {/* Chat area */}
+
         <div
-  ref={chatContainerRef}
-  className="flex-1 overflow-y-auto p-6 space-y-4"
->
-          {messages.map((msg: any, index: number) => (
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto p-6 space-y-4"
+        >
+
+          {messages.map((msg, index) => (
+
             <div
               key={index}
               className={`max-w-3xl p-4 rounded-lg ${
@@ -415,6 +240,7 @@ function extractFunction(text: string) {
                   : "bg-[#444654]"
               }`}
             >
+
               <span className="font-bold text-green-400">
                 {msg.role === "user" ? "Bạn: " : "AI: "}
               </span>
@@ -425,70 +251,82 @@ function extractFunction(text: string) {
               >
                 {msg.content}
               </ReactMarkdown>
+
               {msg.graph && (
-  <div style={{ width: "100%", height: "450px", background: "#fff", marginTop: 10 }}>
-    <Plot
-      data={[
-        {
-          x: msg.graph.x,
-          y: msg.graph.y,
-          type: "scatter",
-          mode: "lines",
-          line: { color: "#2563eb" }
-        }
-      ]}
-      layout={{
-        title: { text: "Đồ thị hàm số" },
-        xaxis: { title: { text: "x" } },
-        yaxis: { title: { text: "y" } }
-      }}
-      style={{ width: "100%", height: "100%" }}
-    />
-  </div>
-)}
+
+                <div style={{ height: 450, marginTop: 20, background: "#fff" }}>
+
+                  <Plot
+                    data={[
+                      {
+                        x: msg.graph.x,
+                        y: msg.graph.y,
+                        type: "scatter",
+                        mode: "lines"
+                      }
+                    ]}
+                    layout={{
+                      title: { text: "Đồ thị hàm số" },
+                      xaxis: { title: { text: "x" } },
+                      yaxis: { title: { text: "y" } },
+                      dragmode: "pan"
+                    }}
+                    config={{
+                      responsive: true,
+                      scrollZoom: true
+                    }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+
+                </div>
+
+              )}
+
             </div>
+
           ))}
 
           {loading && (
             <div className="bg-green-800 p-4 rounded-lg max-w-3xl">
-              <span className="font-bold text-white">AI:</span> Đang trả lời...
+              AI: Đang trả lời...
             </div>
           )}
-          
+
         </div>
-          
+
         <div className="p-4 bg-[#40414F] border-t border-gray-700">
-  <div className="flex gap-2 max-w-3xl mx-auto">
 
-    <textarea
-      value={input}
-      onChange={(e) => setInput(e.target.value)}
-      placeholder="Nhập câu hỏi..."
-      rows={1}
-      className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white resize-none focus:outline-none"
-      onInput={(e:any)=>{
-        e.target.style.height="auto"
-        e.target.style.height=e.target.scrollHeight+"px"
-      }}
-      onKeyDown={(e)=>{
-        if(e.key==="Enter" && !e.shiftKey){
-          e.preventDefault()
-          handleSend()
-        }
-      }}
-    />
+          <div className="flex gap-2 max-w-3xl mx-auto">
 
-    <button
-      onClick={handleSend}
-      className="bg-green-600 px-4 rounded hover:bg-green-700"
-    >
-      Gửi
-    </button>
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Nhập câu hỏi..."
+              rows={1}
+              className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+            />
 
-  </div>
-</div>
+            <button
+              onClick={handleSend}
+              className="bg-green-600 px-4 rounded"
+            >
+              Gửi
+            </button>
+
+          </div>
+
+        </div>
+
       </div>
-      
+
     </div>
+
   );
+
 }
