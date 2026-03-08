@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Graph from "@/components/Graph";
+import dynamic from "next/dynamic";
+
+const Graph = dynamic(() => import("@/components/Graph"), {
+  ssr: false,
+});
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
