@@ -18,14 +18,19 @@ type Message = {
     name: string;
     url: string;
   };
+  graph?: {
+  x: number[];
+  y: number[];
 };
+};
+
 type Chat = {
   id: string;
   title: string;
   messages: Message[];
 };
 export default function Home() {
-  const [graphData, setGraphData] = useState<any>(null);
+  
   const [chats, setChats] = useState<any[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const handleNewChat = () => {
@@ -178,22 +183,29 @@ setInput("");
 
       const data = await res.json();
 
-      const aiMessage = { role: "assistant", content: data.reply };
-      setChats(prev =>
-        prev.map(chat =>
-          chat.id === currentChatId
-            ? { ...chat, messages: [...chat.messages, aiMessage] }
-            : chat
-        )
-      );
-      setGraphData(null);
-      const func = extractFunction(aiMessage.content);
-      console.log("Function detected:", func);
+      let graph = null;
+
+const func = extractFunction(data.reply);
+
+console.log("Function detected:", func);
+
 if (func) {
-  setTimeout(() => {
-    drawFunctionGraph(func);
-  }, 300);
+  graph = drawFunctionGraph(func);
 }
+
+const aiMessage = {
+  role: "assistant",
+  content: data.reply,
+  graph
+};
+
+setChats(prev =>
+  prev.map(chat =>
+    chat.id === currentChatId
+      ? { ...chat, messages: [...chat.messages, aiMessage] }
+      : chat
+  )
+);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -205,6 +217,7 @@ const handleLogout = async () => {
   window.location.href = "/";
 };
 function drawFunctionGraph(expression: string) {
+
   try {
 
     const expr = compile(expression);
@@ -223,14 +236,19 @@ function drawFunctionGraph(expression: string) {
 
     }
 
-    setGraphData({
+    return {
       x: xValues,
       y: yValues
-    });
+    };
 
   } catch (error) {
+
     console.log("Không vẽ được đồ thị", error);
+
+    return null;
+
   }
+
 }
 function extractFunction(text: string) {
 
@@ -407,6 +425,27 @@ function extractFunction(text: string) {
               >
                 {msg.content}
               </ReactMarkdown>
+              {msg.graph && (
+  <div style={{ width: "100%", height: "450px", background: "#fff", marginTop: 10 }}>
+    <Plot
+      data={[
+        {
+          x: msg.graph.x,
+          y: msg.graph.y,
+          type: "scatter",
+          mode: "lines",
+          line: { color: "#2563eb" }
+        }
+      ]}
+      layout={{
+        title: { text: "Đồ thị hàm số" },
+        xaxis: { title: { text: "x" } },
+        yaxis: { title: { text: "y" } }
+      }}
+      style={{ width: "100%", height: "100%" }}
+    />
+  </div>
+)}
             </div>
           ))}
 
@@ -415,34 +454,7 @@ function extractFunction(text: string) {
               <span className="font-bold text-white">AI:</span> Đang trả lời...
             </div>
           )}
-          {graphData && (
-  <div
-    style={{
-      width: "100%",
-      height: "450px",
-      marginTop: "20px",
-      background: "#ffffff"
-    }}
-  >
-    <Plot
-      data={[
-        {
-          x: graphData.x,
-          y: graphData.y,
-          type: "scatter",
-          mode: "lines",
-          line: { color: "#2563eb" }
-        }
-      ]}
-      layout={{
-  title: { text: "Đồ thị hàm số" },
-  xaxis: { title: { text: "x" } },
-  yaxis: { title: { text: "y" } }
-}}
-      style={{ width: "100%", height: "100%" }}
-    />
-  </div>
-)}
+          
         </div>
           
         <div className="p-4 bg-[#40414F] border-t border-gray-700">
