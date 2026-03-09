@@ -348,9 +348,14 @@ const handleLogout = async () => {
               >
                 {msg.content}
               </ReactMarkdown>
-              {msg.content.includes("y =") && (
-<Graph equation={msg.content.split("y =")[1]} />
-)}
+              {/* Vẽ đồ thị */}
+    {msg.content.includes("y=") && (
+      (() => {
+        const match = msg.content.match(/y\s*=\s*([^\n]+)/i)
+        const equation = match ? match[1] : ""
+        return <Graph equation={equation} />
+      })()
+    )}
             </div>
             
           ))}

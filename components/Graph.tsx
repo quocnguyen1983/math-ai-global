@@ -11,16 +11,15 @@ export default function Graph({ equation }: any) {
 
     try {
 
-      // 🔧 Làm sạch biểu thức
       let clean = equation
-  .replace(/\$\$/g, "")
+  .replace(/\$/g, "")
   .replace(/\\/g, "")
-  .replace(/y\s*=\s*/g, "")
   .replace(/(\d)x/g, "$1*x")
   .replace(/\^/g, "**")
-  .trim();
+  .split(/[,\n]/)[0]
+  .trim()
 
-console.log("Function:", clean);
+console.log("Function:", clean)
       functionPlot({
   target: ref.current,
   width: 500,
@@ -37,7 +36,7 @@ console.log("Function:", clean);
       graphType: "polyline"
     }
   ]
-});
+})
 
     } catch (err) {
       console.error("Graph error:", err);
