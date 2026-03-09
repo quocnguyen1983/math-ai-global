@@ -21,20 +21,17 @@ export default function Graph({ equation }: any) {
   // bỏ "y="
   .replace(/.*y\s*=\s*/i, "")
 
-  // 3x → 3*x
+  // xử lý 3x → 3*x
   .replace(/(\d)(x)/g, "$1*$2")
 
-  // x(x+1) → x*(x+1)
-  .replace(/x\(/g, "x*(")
+  // xử lý x^3 → x**3
+  .replace(/x\^(\d+)/g, "x**$1")
 
-  // )x → )*x
-  .replace(/\)x/g, ")*x")
-
-  // ^ → **
+  // xử lý ^ còn lại
   .replace(/\^/g, "**")
 
-  // loại dấu thừa
-  .replace(/\*\*\*/g, "**")
+  // loại dấu *** nếu bị lỗi
+  .replace(/\*\*\*/g, "*")
 
   // chỉ lấy dòng đầu
   .split(/[,\n]/)[0]
