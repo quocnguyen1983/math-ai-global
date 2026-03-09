@@ -18,19 +18,19 @@ export default function Graph({ equation }: any) {
   .replace(/\$/g, "")
   .replace(/\\/g, "")
 
-  // bỏ "y="
+  // bỏ y=
   .replace(/.*y\s*=\s*/i, "")
 
-  // xử lý 3x → 3*x
+  // 3x → 3*x
   .replace(/(\d)(x)/g, "$1*$2")
 
-  // xử lý x^3 → x**3
-  .replace(/x\^(\d+)/g, "x**$1")
+  // x(x+1) → x*(x+1)
+  .replace(/x\(/g, "x*(")
 
-  // xử lý ^ còn lại
-  .replace(/\^/g, "**")
+  // )x → )*x
+  .replace(/\)x/g, ")*x")
 
-  // loại dấu *** nếu bị lỗi
+  // loại dấu ***
   .replace(/\*\*\*/g, "*")
 
   // chỉ lấy dòng đầu
