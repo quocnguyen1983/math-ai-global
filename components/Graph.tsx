@@ -33,16 +33,8 @@ export default function Graph({ equation }: any) {
   // ^ → **
   .replace(/\^/g, "**")
 
-  // căn
-  .replace(/sqrt/g, "sqrt")
-
-  // log
-  .replace(/ln/g, "log")
-
-  // lượng giác
-  .replace(/sin/g, "sin")
-  .replace(/cos/g, "cos")
-  .replace(/tan/g, "tan")
+  // loại dấu thừa
+  .replace(/\*\*\*/g, "**")
 
   // chỉ lấy dòng đầu
   .split(/[,\n]/)[0]
