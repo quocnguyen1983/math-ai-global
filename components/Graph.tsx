@@ -19,18 +19,29 @@ export default function Graph({ equation }: any) {
         .replace(/(\d)x/g, "$1*x")   // 3x -> 3*x
         .replace(/\^/g, "**")        // ^ -> **
         .trim();
-
+      console.log("Function:", clean);
       functionPlot({
-        target: ref.current,
-        width: 500,
-        height: 400,
-        grid: true,
-        data: [
-          {
-            fn: clean,
-          },
-        ],
-      });
+  target: ref.current,
+  width: 500,
+  height: 400,
+  grid: true,
+
+  xAxis: {
+    domain: [-10, 10],
+  },
+
+  yAxis: {
+    domain: [-10, 10],
+  },
+
+  data: [
+    {
+      fn: clean,
+      sampler: "builtIn",
+      graphType: "polyline",
+    },
+  ],
+});
 
     } catch (err) {
       console.error("Graph error:", err);
