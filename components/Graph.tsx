@@ -12,11 +12,41 @@ export default function Graph({ equation }: any) {
     try {
 
       let clean = equation
+  .toLowerCase()
+
+  // bỏ latex
   .replace(/\$/g, "")
   .replace(/\\/g, "")
-  .replace(/(\d)x/g, "$1*x")
+
+  // bỏ "y="
+  .replace(/.*y\s*=\s*/i, "")
+
+  // 3x → 3*x
+  .replace(/(\d)(x)/g, "$1*$2")
+
+  // x(x+1) → x*(x+1)
+  .replace(/x\(/g, "x*(")
+
+  // )x → )*x
+  .replace(/\)x/g, ")*x")
+
+  // ^ → **
   .replace(/\^/g, "**")
+
+  // căn
+  .replace(/sqrt/g, "sqrt")
+
+  // log
+  .replace(/ln/g, "log")
+
+  // lượng giác
+  .replace(/sin/g, "sin")
+  .replace(/cos/g, "cos")
+  .replace(/tan/g, "tan")
+
+  // chỉ lấy dòng đầu
   .split(/[,\n]/)[0]
+
   .trim()
 
 console.log("Function:", clean)
