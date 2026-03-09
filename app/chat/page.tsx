@@ -42,6 +42,7 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
+  const [image, setImage] = useState<string | null>(null)
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [user, setUser] = useState<any>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -139,11 +140,32 @@ useEffect(() => {
     setCurrentChatId(null);
     localStorage.removeItem("chats");
   };
+const handlePaste = (e: React.ClipboardEvent) => {
+  const items = e.clipboardData.items
 
+  for (let item of items) {
+    if (item.type.indexOf("image") !== -1) {
+      const file = item.getAsFile()
+      const reader = new FileReader()
+
+      reader.onload = (event) => {
+        setImage(event.target?.result as string)
+      }
+
+      if (file) {
+        reader.readAsDataURL(file)
+      }
+    }
+  }
+}
   const handleSend = async () => {
     if (!input || !currentChatId) return;
 
-    const userMessage = { role: "user", content: input };
+    const userMessage = {
+  role: "user",
+  content: input,
+  image: image
+};
 
     setChats(prevChats =>
   prevChats.map(chat => {
@@ -174,7 +196,10 @@ setInput("");
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({
+  message: input,
+  image: image
+})
       });
 
       const data = await res.json();
@@ -190,6 +215,7 @@ setInput("");
       );
 
       setLoading(false);
+      setImage(null);
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -348,6 +374,12 @@ const handleLogout = async () => {
               >
                 {msg.content}
               </ReactMarkdown>
+              {image && (
+  <img
+    src={image}
+    className="max-w-xs rounded-lg mt-2"
+  />
+)}
               {/* Vẽ đồ thị */}
     {msg.content.includes("y=") && (
       (() => {
@@ -374,6 +406,7 @@ const handleLogout = async () => {
     <textarea
       value={input}
       onChange={(e) => setInput(e.target.value)}
+      onPaste={handlePaste}
       placeholder="Nhập câu hỏi..."
       rows={1}
       className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white resize-none focus:outline-none"

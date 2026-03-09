@@ -31,13 +31,17 @@ if (!user) {
   return NextResponse.json({ error: "User không tồn tại" }, { status: 404 });
 }
   try {
-    const { message } = await req.json();
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
+    const { message, image } = await req.json()
+
+const completion = await openai.responses.create({
+  model: "gpt-4o-mini",
+  input: [
+    {
+      role: "system",
+      content: [
         {
-  role: "system",
-  content: `
+          type: "input_text",
+          text: `
 Bạn là AI toán học.
 Khi viết công thức toán, LUÔN đặt công thức trong dấu $$ $$.
 Ví dụ:
@@ -78,10 +82,33 @@ Ví dụ bảng biến thiên:
 
 Luôn trình bày rõ ràng để học sinh dễ hiểu.
 `
-},
-        { role: "user", content: message },
-      ],
-    });
+        }
+      ]
+    },
+   {
+  role: "user",
+  content: image
+    ? [
+        {
+          type: "input_text",
+          text: message || "Giải bài toán trong ảnh"
+        },
+        {
+          type: "input_image",
+          image_url: image,
+          detail: "auto"
+        }
+      ]
+    : [
+        {
+          type: "input_text",
+          text: message || "Giải bài toán trong ảnh"
+        }
+      ]
+}
+  ]
+})
+    
     const usedTokens = completion.usage?.total_tokens || 0;
 
 await prisma.user.update({
@@ -92,7 +119,7 @@ await prisma.user.update({
   },
 });
     return NextResponse.json({
-  reply: completion.choices[0].message.content,
+  reply: completion.output_text,
 });
   } catch (error) {
     console.error(error);
