@@ -50,7 +50,23 @@ const handleSolve = async () => {
         <div className="text-xl font-bold text-green-400">
           AI Toán Học
         </div>
+        <div className="flex gap-4">
+  
+  <Link
+    href="/help"
+    className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
+  >
+    Liên hệ
+  </Link>
 
+  <Link
+    href="/upgrade"
+    className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
+  >
+    Nâng cấp gói
+  </Link>
+
+</div>
         <div className="flex gap-6">
 
           <Link href="/login" className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg">
