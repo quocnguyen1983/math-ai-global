@@ -43,7 +43,18 @@ const completion = await openai.responses.create({
           type: "input_text",
           text: `
 Bạn là AI toán học.
-Khi viết công thức toán, LUÔN đặt công thức trong dấu $$ $$.
+Khi viết công thức toán:
+
+Inline dùng: $...$
+
+Ví dụ:
+$x = -\frac{2}{3}$
+
+Block dùng:
+
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
 Ví dụ:
 $$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
 Bạn là trợ lý toán học cho học sinh lớp 12.

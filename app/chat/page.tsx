@@ -11,6 +11,11 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
+const formatMath = (text: string) => {
+  return text
+    .replace(/\\\[([\s\S]+?)\\\]/g, "$$$$$1$$$$")  // [ ... ] → $$ ... $$
+    .replace(/\\\(([\s\S]+?)\\\)/g, "$$$$$1$$$$")  // ( ... ) → $$ ... $$
+}
 
 type Message = {
   role: "user" | "assistant";
@@ -372,12 +377,16 @@ const handleLogout = async () => {
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}
               >
-                {msg.content}
+                {formatMath(msg.content)}
               </ReactMarkdown>
-              {image && (
+              {msg.image && (
   <img
-    src={image}
-    className="max-w-xs rounded-lg mt-2"
+    src={msg.image}
+    style={{
+      maxWidth: "300px",
+      borderRadius: "8px",
+      marginTop: "8px"
+    }}
   />
 )}
               {/* Vẽ đồ thị */}
