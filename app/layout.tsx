@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import "./globals.css";
 import "katex/dist/katex.min.css";
 export const metadata = {
-  title: "Toanlop12 AI",
-  description: "AI giải toán",
+  title: "AI Toán Học - Giải toán lớp 1-12 bằng AI",
+  description:
+    "Công cụ AI giải toán từ lớp 1 đến lớp 12. Phân tích chi tiết từng bước, vẽ đồ thị và hiển thị công thức LaTeX.",
 };
 
 export default function RootLayout({
