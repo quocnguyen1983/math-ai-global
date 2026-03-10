@@ -47,10 +47,44 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
+  const [selectedText, setSelectedText] = useState("")
+const [showAskAI, setShowAskAI] = useState(false)
+const [askPosition, setAskPosition] = useState({ x: 0, y: 0 })
+useEffect(() => {
+  const handleSelection = () => {
+    const selection = window.getSelection()?.toString()
+
+    if (selection && selection.length > 5) {
+      const rect = window.getSelection()?.getRangeAt(0).getBoundingClientRect()
+
+      if (rect) {
+        setSelectedText(selection)
+        setShowAskAI(true)
+        setAskPosition({
+          x: rect.left + rect.width / 2,
+          y: rect.top - 40
+        })
+      }
+    } else {
+      setShowAskAI(false)
+    }
+  }
+
+  document.addEventListener("mouseup", handleSelection)
+
+  return () => {
+    document.removeEventListener("mouseup", handleSelection)
+  }
+}, [])
   const [image, setImage] = useState<string | null>(null)
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [user, setUser] = useState<any>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const handleAskAI = () => {
+  const question = `[ ${selectedText} ]\n\nHỏi: `
+  setInput(question)
+  setShowAskAI(false)
+}
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   if (!currentChatId) return;
 
@@ -231,6 +265,7 @@ const handleLogout = async () => {
   window.location.href = "/";
 };
   return (
+    <>
      <div className="relative flex h-screen w-screen bg-[#343541] text-white overflow-hidden">
       
       {/* Sidebar */}
@@ -443,5 +478,25 @@ const handleLogout = async () => {
       </div>
       
     </div>
+    {showAskAI && (
+  <button
+    onClick={handleAskAI}
+    style={{
+      position: "fixed",
+      left: askPosition.x,
+      top: askPosition.y,
+      background: "#fff",
+      border: "1px solid #ddd",
+      borderRadius: "20px",
+      padding: "6px 12px",
+      boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
+      cursor: "pointer",
+      zIndex: 999
+    }}
+  >
+    ❝ Hỏi AI
+  </button>
+)}
+</>
   );
 }
