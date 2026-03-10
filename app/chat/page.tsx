@@ -458,7 +458,7 @@ const handleLogout = async () => {
       onPaste={handlePaste}
       placeholder="Nhập câu hỏi..."
       rows={3}
-      className="flex-1 bg-[#40414F] border border-gray-600 rounded p-3 text-white resize-none focus:outline-none whitespace-pre-wrap break-normal"
+      className="w-full p-3 rounded-lg bg-gray-700 text-white resize-none whitespace-pre-wrap wrap-break-word overflow-x-hidden"
       onInput={(e:any)=>{
         e.target.style.height="auto"
         e.target.style.height=e.target.scrollHeight+"px"
