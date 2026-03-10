@@ -461,8 +461,8 @@ const handleLogout = async () => {
       onChange={(e) => setInput(e.target.value)}
       onPaste={handlePaste}
       placeholder="Nhập câu hỏi..."
-      rows={3}
-      className="w-full p-3 rounded-lg bg-gray-700 text-white resize-none whitespace-pre-wrap wrap-break-word overflow-x-hidden"
+      rows={1}
+      className="w-full p-3 rounded-lg bg-gray-600 text-white resize-none whitespace-pre-wrap wrap-break-word overflow-x-hidden"
       onInput={(e:any)=>{
         e.target.style.height="auto"
         e.target.style.height=e.target.scrollHeight+"px"
