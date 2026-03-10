@@ -47,26 +47,28 @@ const handleSolve = async () => {
       {/* NAVBAR */}
       <nav className="flex justify-between items-center px-10 py-6 border-b border-gray-800">
 
-        <div className="text-xl font-bold text-green-400">
-          AI Toán Học
-        </div>
-        <div className="flex gap-4">
-  
-  <Link
-    href="/help"
-    className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
-  >
-    Liên hệ
-  </Link>
+         {/* LEFT SIDE */}
+  <div className="flex items-center gap-6">
 
-  <Link
-    href="/upgrade"
-    className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
-  >
-    Nâng cấp gói
-  </Link>
+    <div className="text-xl font-bold text-green-400">
+      AI Toán Học
+    </div>
 
-</div>
+    <Link
+      href="/help"
+      className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
+    >
+      Liên hệ
+    </Link>
+
+    <Link
+      href="/upgrade"
+      className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
+    >
+      Nâng cấp gói
+    </Link>
+
+  </div>
         <div className="flex gap-6">
 
           <Link href="/login" className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg">
