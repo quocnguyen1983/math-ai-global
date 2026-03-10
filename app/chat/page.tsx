@@ -263,7 +263,12 @@ setInput("");
       );
 
       setLoading(false);
+      setInput("")
       setImage(null);
+      const textarea = document.querySelector("textarea")
+if(textarea){
+ textarea.style.height="auto"
+}
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -420,6 +425,13 @@ const handleLogout = async () => {
               <ReactMarkdown
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}
+                components={{
+  blockquote: ({node, ...props}) => (
+    <blockquote className="border-l-4 border-gray-400 pl-4 py-2 bg-gray-700/40 rounded">
+      {props.children}
+    </blockquote>
+  )
+ }}
               >
                 {formatMath(msg.content)}
               </ReactMarkdown>
