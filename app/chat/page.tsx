@@ -81,8 +81,13 @@ useEffect(() => {
   const [user, setUser] = useState<any>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const handleAskAI = () => {
-  const question = `[ ${selectedText} ]\n\nHỏi: `
-  setInput(question)
+  const formatted = `Trích đoạn:
+
+${selectedText}
+
+Câu hỏi: `
+
+  setInput(formatted)
   setShowAskAI(false)
 }
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -452,8 +457,8 @@ const handleLogout = async () => {
       onChange={(e) => setInput(e.target.value)}
       onPaste={handlePaste}
       placeholder="Nhập câu hỏi..."
-      rows={1}
-      className="flex-1 bg-[#40414F] border border-gray-600 rounded p-2 text-white resize-none focus:outline-none"
+      rows={3}
+      className="flex-1 bg-[#40414F] border border-gray-600 rounded p-3 text-white resize-none focus:outline-none whitespace-pre-wrap break-normal"
       onInput={(e:any)=>{
         e.target.style.height="auto"
         e.target.style.height=e.target.scrollHeight+"px"
