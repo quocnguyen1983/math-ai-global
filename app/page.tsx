@@ -51,7 +51,7 @@ const handleSolve = async () => {
   <div className="flex items-center gap-6">
 
     <div className="text-xl font-bold text-green-400">
-      AI Toán Học
+      🤖AI Toán Học
     </div>
 
     <Link
