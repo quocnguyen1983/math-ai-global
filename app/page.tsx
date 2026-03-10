@@ -193,7 +193,7 @@ const handleSolve = async () => {
             🎯 Chuẩn chương trình
           </h3>
           <p className="text-gray-400">
-            Phù hợp chương trình Toán lớp 12.
+            Phù hợp chương trình Toán lớp 1-12.
           </p>
         </div>
   {/* H1 */}
