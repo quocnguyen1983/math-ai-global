@@ -81,13 +81,17 @@ useEffect(() => {
   const [user, setUser] = useState<any>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const handleAskAI = () => {
+
+  const cleaned = selectedText.replace(/\n/g," ").trim()
+
   const formatted = `Trích đoạn:
 
-${selectedText}
+"${cleaned}"
 
 Câu hỏi: `
 
   setInput(formatted)
+
   setShowAskAI(false)
 }
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
