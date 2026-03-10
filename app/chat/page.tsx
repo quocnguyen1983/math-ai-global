@@ -465,7 +465,7 @@ const handleLogout = async () => {
           
         </div>
 
-        <div className="flex items-center gap-2 p-4 bg-gray-800 border-t border-gray-700">
+        <div className="p-4 bg-[#40414F] border-t border-gray-700">
   <div className="flex gap-2 max-w-3xl mx-auto">
 
     <textarea
@@ -474,7 +474,7 @@ const handleLogout = async () => {
       onPaste={handlePaste}
       placeholder="Nhập câu hỏi..."
       rows={1}
-      className="w-full p-3 rounded-lg bg-gray-400 text-white resize-none whitespace-pre-wrap wrap-break-word overflow-x-hidden"
+      className="w-full p-3 rounded-lg bg-gray-600 text-white resize-none whitespace-pre-wrap wrap-break-word overflow-x-hidden"
       onInput={(e:any)=>{
         e.target.style.height="auto"
         e.target.style.height=e.target.scrollHeight+"px"
