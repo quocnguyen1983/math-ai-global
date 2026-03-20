@@ -42,6 +42,12 @@ const completion = await openai.responses.create({
         {
           type: "input_text",
           text: `
+You are a professional math AI tutor.
+
+STRICT RULES:
+- Always answer in English
+- Never use Vietnamese
+- Even if user writes in Vietnamese, respond in English
 Bạn là AI toán học.
 Khi viết công thức toán:
 
