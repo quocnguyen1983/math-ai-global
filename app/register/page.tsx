@@ -22,7 +22,7 @@ const [showPassword, setShowPassword] = useState(false);
 const data = await res.json();
 
 if (res.ok) {
-  setSuccess("🎉 Tài khoản của bạn đã được tạo thành công! Vui lòng đăng nhập.");
+  setSuccess("🎉 Your account has been created successfully! Please log in.");
 
   setTimeout(() => {
     router.push("/login");
@@ -39,7 +39,7 @@ else {
 
         {/* Title */}
         <h2 className="text-2xl font-bold text-center mb-6">
-          Đăng ký
+          Sign up
         </h2>
 {success && (
   <div className="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
@@ -53,7 +53,7 @@ else {
           </label>
           <input
             type="email"
-            placeholder="Nhập email..."
+            placeholder="Enter your email..."
             className="w-full bg-[#020617] border border-green-500 px-4 py-3 rounded-lg text-white outline-none focus:ring-2 focus:ring-green-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -67,7 +67,7 @@ else {
           </label>
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="Nhập mật khẩu..."
+            placeholder="Enter your password..."
             className="w-full bg-[#020617] border border-green-500 px-4 py-3 rounded-lg text-white outline-none focus:ring-2 focus:ring-green-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -87,18 +87,18 @@ else {
           onClick={handleRegister}
           className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold w-full mt-6"
         >
-          Đăng ký
+          Sign up
         </button>
 
         {/* Login link */}
         <p className="text-sm text-center mt-4">
-          Đã có tài khoản?{" "}
+          Already have an account {" "}
           <button
             onClick={() => router.push("/login")}
             className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold w-full mt-6"
         >
           
-            Đăng nhập
+            Login
           </button>
         </p>
 

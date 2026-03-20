@@ -27,7 +27,7 @@ export default function AccountPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-900 to-gray-800 text-white p-10">
       <div className="max-w-3xl mx-auto bg-gray-850 rounded-2xl shadow-2xl p-8 border border-gray-700">
         <h1 className="text-3xl font-bold mb-6 text-green-400">
-          🚀 Thông tin gói cước
+          🚀 Plan details
         </h1>
 
         <div className="space-y-4 text-lg">
@@ -37,24 +37,24 @@ export default function AccountPage() {
           </div>
 
           <div className="flex justify-between border-b border-gray-700 pb-2">
-            <span>Gói hiện tại</span>
+            <span>Current plan</span>
             <span className="font-semibold text-yellow-400 uppercase">
               {user.plan}
             </span>
           </div>
 
           <div className="flex justify-between border-b border-gray-700 pb-2">
-            <span>Số câu đã dùng</span>
+            <span>Questions used</span>
             <span>{user.questionsUsed}</span>
           </div>
 
           <div className="flex justify-between border-b border-gray-700 pb-2">
-            <span>Token đã dùng</span>
+            <span>Tokens used</span>
             <span>{user.tokensUsed}</span>
           </div>
 
           <div className="flex justify-between">
-            <span>Ngày reset</span>
+            <span>Reset date</span>
             <span>{resetDate}</span>
           </div>
         </div>
@@ -65,7 +65,7 @@ export default function AccountPage() {
               href="/upgrade"
               className="block w-full text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition"
             >
-              🔥 Nâng cấp ngay
+              🔥 Upgrade now
             </a>
           )}
         </div>

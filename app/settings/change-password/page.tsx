@@ -21,14 +21,14 @@ export default function ChangePasswordPage() {
   const data = await res.json();
 
   if (data.success) {
-    alert("Đổi mật khẩu thành công!");
+    alert("Password changed successfully!");
   } else {
     alert(data.error);
   }
 };
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950 text-white p-10">
-      <h1 className="text-3xl font-bold mb-8">🔐 Đổi mật khẩu</h1>
+      <h1 className="text-3xl font-bold mb-8">🔐 Change password</h1>
 
       <div className="space-y-6 max-w-md">
 
@@ -36,7 +36,7 @@ export default function ChangePasswordPage() {
         <div className="relative">
           <input
             type={showOld ? "text" : "password"}
-            placeholder="Mật khẩu cũ"
+            placeholder="Current password"
             value={oldPassword}
 onChange={(e) => setOldPassword(e.target.value)}
             className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -53,7 +53,7 @@ onChange={(e) => setOldPassword(e.target.value)}
         <div className="relative">
           <input
             type={showNew ? "text" : "password"}
-            placeholder="Mật khẩu mới"
+            placeholder="New password"
             value={newPassword}
 onChange={(e) => setNewPassword(e.target.value)}
             className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -70,7 +70,7 @@ onChange={(e) => setNewPassword(e.target.value)}
   onClick={handleSubmit}
   className="bg-green-600 hover:bg-green-700 px-5 py-3 rounded-lg font-medium"
 >
-  Cập nhật
+  Update
 </button>
       </div>
     </div>

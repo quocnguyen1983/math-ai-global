@@ -15,7 +15,7 @@ export default function ChangeEmailPage() {
     });
 
     const data = await res.json();
-    alert(data.success ? "Đổi email thành công" : data.error);
+    alert(data.success ? "Email changed successfully" : data.error);
   };
 
   return (
@@ -23,7 +23,7 @@ export default function ChangeEmailPage() {
       
       {/* Title */}
       <h1 className="text-3xl font-bold mb-8">
-        📧 Đổi email
+        📧 Change email
       </h1>
 
       <div className="space-y-6 max-w-md">
@@ -32,7 +32,7 @@ export default function ChangeEmailPage() {
         <div className="relative">
           <input
             type="email"
-            placeholder="Email mới"
+            placeholder="New email"
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
             className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -44,7 +44,7 @@ export default function ChangeEmailPage() {
           onClick={handleSubmit}
           className="bg-green-600 hover:bg-green-700 px-5 py-3 rounded-lg font-medium"
         >
-          Cập nhật
+          Update
         </button>
 
       </div>

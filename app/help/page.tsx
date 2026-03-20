@@ -34,44 +34,44 @@ const [success, setSuccess] = useState(false);
       setSuccess(true);
       setForm({ name: "", email: "", message: "" });
     } else {
-      alert("Gửi thất bại, vui lòng thử lại.");
+      alert("Submission failed. Please try again.");
     }
   } catch (error) {
-    alert("Có lỗi xảy ra.");
+    alert("An error occurred.");
   }
 };
 if (success) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0F172A] text-white p-6">
-      <div className="max-w-xl text-center space-y-4">
+    <div className="min-h-screen bg-gray-900 text-white">
+      <div className="w-full max-w-2xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-green-400">
-          Yêu cầu của bạn đã được gửi thành công !
+          Your request has been submitted successfully!
         </h1>
 
         <p>
-          Chúng tôi sẽ kiểm tra và phản hồi cho bạn trong thời gian sớm nhất.
+          We will review your request and get back to you as soon as possible.
         </p>
 
         <p>
-          Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi !
+          Thank you for trusting and using our service!
         </p>
 
         <p className="text-green-300 font-semibold">
-          Chúc bạn một ngày tốt lành !
+          Have a great day!
         </p>
       </div>
     </div>
   );
 }
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950 text-white px-6 py-12">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gray-900 text-white flex justify-center items-center">
+      <div className="w-full max-w-2xl mx-auto px-4">
         
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-4xl font-bold mb-2">Trợ giúp</h1>
+          <h1 className="text-4xl font-bold mb-2">Contact Support</h1>
           <p className="text-gray-400">
-            Gửi yêu cầu hỗ trợ, chúng tôi sẽ phản hồi sớm nhất có thể
+            Submit a support request and we will get back to you as soon as possible.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ if (success) {
           {/* Họ và tên */}
           <div>
             <label className="block mb-2 text-sm font-medium">
-              Họ và tên
+              Full name
             </label>
             <input
               type="text"
@@ -92,7 +92,7 @@ if (success) {
               onChange={handleChange}
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Nhập họ và tên"
+              placeholder="Enter your full name"
             />
           </div>
 
@@ -108,14 +108,14 @@ if (success) {
               onChange={handleChange}
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Nhập email"
+              placeholder="Enter your email"
             />
           </div>
 
           {/* Nội dung */}
           <div>
             <label className="block mb-2 text-sm font-medium">
-              Nội dung
+              Message
             </label>
             <textarea
               name="message"
@@ -124,7 +124,7 @@ if (success) {
               onChange={handleChange}
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Nhập nội dung cần hỗ trợ..."
+              placeholder="Enter your message..."
             />
           </div>
 
@@ -133,13 +133,13 @@ if (success) {
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 transition rounded-lg py-3 font-semibold"
           >
-            Gửi yêu cầu
+            Send message
           </button>
         </form>
 
         {/* Support Email */}
         <div className="mt-8 text-center text-gray-400 text-sm">
-          Hoặc liên hệ trực tiếp qua email:{" "}
+          Or contact us directly via email:{" "}
           <span className="text-green-400 font-medium">
             servicetoan.ai@gmail.com
           </span>

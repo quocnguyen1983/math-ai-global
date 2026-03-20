@@ -34,10 +34,11 @@ type Chat = {
 export default function Home() {
   const [chats, setChats] = useState<any[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false); 
   const handleNewChat = () => {
   const newChat = {
     id: Date.now().toString(),
-    title: "Cuộc trò chuyện mới",
+    title: "New conversation",
     messages: [],
   };
 
@@ -84,11 +85,11 @@ useEffect(() => {
 
   const cleaned = selectedText.replace(/\n/g," ").trim()
 
-  const formatted = `Trích đoạn:
+  const formatted = `Excerpt:
 
 "${cleaned}"
 
-Câu hỏi: `
+Question: `
 
   setInput(formatted)
 
@@ -155,12 +156,16 @@ useEffect(() => {
         setCurrentChatId(parsed[0].id);
       }
     }
+    setIsLoaded(true);
   }, []);
 
   // Save localStorage
-  useEffect(() => {
-    localStorage.setItem("chats", JSON.stringify(chats));
-  }, [chats]);
+  // Save localStorage
+useEffect(() => {
+  if (!isLoaded) return; // ❗ chặn save khi chưa load xong
+
+  localStorage.setItem("chats", JSON.stringify(chats));
+}, [chats, isLoaded]);
 const currentChat = chats.find(chat => chat.id === currentChatId);
   const messages = currentChat?.messages || [];
 useEffect(() => {
@@ -173,9 +178,9 @@ useEffect(() => {
   const createNewChat = () => {
     const newChat = {
       id: Date.now().toString(),
-      title: "Cuộc trò chuyện mới",
+      title: "New Conversation",
       messages: [
-        { role: "assistant", content: "Chào bạn! Tôi có thể giúp gì?" }
+        { role: "assistant", content: "Hello! How can I help you?" }
       ]
     };
 
@@ -288,14 +293,14 @@ const handleLogout = async () => {
   onClick={handleNewChat}
   className="w-full p-2 bg-gray-700 rounded"
 >
-  + Cuộc trò chuyện mới
+  + New Conversation
 </button>
 
         <button
           onClick={clearAllChats}
           className="mt-3 bg-[#5C4033] hover:bg-[#4a342a] text-white p-2 rounded transition"
         >
-          Xóa toàn bộ
+          Delete all
         </button>
 
         <div className="mt-4 space-y-2 overflow-y-auto">
@@ -316,7 +321,7 @@ const handleLogout = async () => {
     {/* Nút đổi tên */}
     <button
       onClick={() => {
-        const newName = prompt("Đổi tên cuộc trò chuyện:", chat.title);
+        const newName = prompt("Rename conversation:", chat.title);
         if (!newName) return;
 
         setChats(prev =>
@@ -362,7 +367,7 @@ const handleLogout = async () => {
   onClick={() => setOpenUserMenu(false)}
   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
 >
-  Nâng cấp gói
+  Upgrade plan
 </Link>
 
 <Link
@@ -370,7 +375,7 @@ const handleLogout = async () => {
   onClick={() => setOpenUserMenu(false)}
   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
 >
-  Cài đặt
+  Settings
 </Link>
 
 <Link
@@ -378,14 +383,14 @@ const handleLogout = async () => {
   onClick={() => setOpenUserMenu(false)}
   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
 >
-  Trợ giúp
+  Contact Support
 </Link>
 <Link
   href="/account"
   onClick={() => setOpenUserMenu(false)}
   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
 >
-  Thông tin gói cước
+  Plan details
 </Link>
         <div className="border-t"></div>
 
@@ -393,7 +398,7 @@ const handleLogout = async () => {
           onClick={handleLogout}
           className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
         >
-          Đăng xuất
+          Log out
         </button>
       </div>
     )}
@@ -419,7 +424,7 @@ const handleLogout = async () => {
               }`}
             >
               <span className="font-bold text-green-400">
-                {msg.role === "user" ? "Bạn: " : "AI: "}
+                {msg.role === "user" ? "You: " : "AI: "}
               </span>
 
               <ReactMarkdown
@@ -459,7 +464,7 @@ const handleLogout = async () => {
 
           {loading && (
             <div className="bg-green-800 p-4 rounded-lg max-w-3xl">
-              <span className="font-bold text-white">AI:</span> Đang trả lời...
+              <span className="font-bold text-white">AI:</span> is responding...
             </div>
           )}
           
@@ -472,7 +477,7 @@ const handleLogout = async () => {
       value={input}
       onChange={(e) => setInput(e.target.value)}
       onPaste={handlePaste}
-      placeholder="Nhập câu hỏi..."
+      placeholder="Type your question..."
       rows={1}
       className="w-full p-3 rounded-lg bg-gray-600 text-white resize-none whitespace-pre-wrap wrap-break-word overflow-x-hidden"
       onInput={(e:any)=>{
@@ -491,7 +496,7 @@ const handleLogout = async () => {
       onClick={handleSend}
       className="bg-green-600 px-4 rounded hover:bg-green-700"
     >
-      Gửi
+      Send
     </button>
 
   </div>
@@ -515,7 +520,7 @@ const handleLogout = async () => {
       zIndex: 999
     }}
   >
-    ❝ Hỏi AI
+    ❝ Ask AI
   </button>
 )}
 </>

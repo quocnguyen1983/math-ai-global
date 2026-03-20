@@ -27,16 +27,7 @@ export default function RootLayout({
         />
       </head>
 
-      <body
-        className="
-        bg-white 
-        dark:bg-[#343541] 
-        text-black 
-        dark:text-white 
-        transition-colors duration-300
-        min-h-screen
-      "
-      >
+      <body className="bg-[#020617] text-white">
         {children}
       </body>
     </html>

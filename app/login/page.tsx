@@ -13,7 +13,7 @@ export default function LoginPage() {
     e.preventDefault();
 
 if (!email || !password) {
-  setError("Vui lòng nhập đầy đủ thông tin!");
+  setError("Please fill in all required fields!");
   return;
 }
 
@@ -39,7 +39,7 @@ router.push("/chat");
     <div className="min-h-screen flex items-center justify-center bg-[#020617] text-white">
       <div className="bg-[#1e293b] pt-6 pb-12 px-10 rounded-xl shadow-lg w-105 mx-auto flex flex-col gap-6">
         <h2 className="text-2xl font-bold text-center mb-6">
-          Đăng nhập
+          Login
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -50,7 +50,7 @@ router.push("/chat");
             </label>
             <input
               type="email"
-              placeholder="Nhập email..."
+              placeholder="Enter your email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-[#020617] border border-green-500 px-4 py-3 rounded-lg text-white outline-none focus:ring-2 focus:ring-green-500"
@@ -65,7 +65,7 @@ router.push("/chat");
 
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Nhập mật khẩu..."
+              placeholder="Enter your password..."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-[#020617] border border-green-500 px-4 py-3 rounded-lg text-white outline-none focus:ring-2 focus:ring-green-500"
@@ -90,7 +90,7 @@ router.push("/chat");
             type="submit"
             className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold w-1/2 mt-6 mx-auto block"
           >
-            Đăng nhập
+            Login
           </button>
         </form>
       </div>

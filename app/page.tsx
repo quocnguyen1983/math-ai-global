@@ -26,7 +26,7 @@ const handleSolve = async () => {
   if (!input) return;
   const count = Number(localStorage.getItem("demoCount") || 0);
   if (count >= 3) {
-    alert("Bạn đã dùng hết 3 lần miễn phí. Hãy đăng ký để tiếp tục sử dụng AI.");
+    alert("You have used all 3 free attempts. Please sign up to continue using the AI.");
     window.location.href = "/register";
     return;
   }
@@ -51,35 +51,35 @@ const handleSolve = async () => {
   <div className="flex items-center gap-6">
 
     <div className="text-xl font-bold text-green-400">
-      🤖AI Toán Học
+      🤖AI Math Solver
     </div>
 
     <Link
       href="/help"
       className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
     >
-      Liên hệ
+      Contact
     </Link>
 
     <Link
       href="/upgrade"
       className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
     >
-      Nâng cấp gói
+      Upgrade Plan
     </Link>
 
   </div>
         <div className="flex gap-6">
 
           <Link href="/login" className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg">
-            Đăng nhập
+            Login
           </Link>
 
           <Link
             href="/register"
             className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
           >
-            Đăng ký miễn phí
+            Sign Up for Free
           </Link>
         </div>
       </nav>
@@ -87,11 +87,11 @@ const handleSolve = async () => {
       <section className="text-center py-32 px-6">
 
         <h1 className="text-5xl font-bold mb-6">
-          AI Giải Toán Lớp 1-12
+          AI Math Solver for K-12 Students
         </h1>
 
         <p className="text-gray-400 text-lg mb-10">
-          Hỏi bất kỳ bài toán lớp 1-12 nào và nhận lời giải chi tiết trong vài giây.
+          Solve any K-12 math problem and get step-by-step solutions in seconds
         </p>
         <div className="container">
 
@@ -99,17 +99,17 @@ const handleSolve = async () => {
   <div className="top-row">
     <input
       className="math-input"
-      placeholder="Ô nhập nội dung bài toán"
+      placeholder="Enter your math problem here"
       value={input}
       onChange={(e) => setInput(e.target.value)}
     />
 
     <button className="solve-btn" onClick={handleSolve}>
-      Giải ngay
+      Solve Now
     </button>
 
     <div className="free-count">
-      Bạn còn {remaining} lượt dùng miễn phí
+      You have {remaining} free attempts remaining
     </div>
   </div>
 
@@ -129,7 +129,7 @@ const handleSolve = async () => {
     {loading ? (
 
       <p className="text-green-400 animate-pulse">
-        🤖 AI đang trả lời...
+        🤖 AI is generating the solution...
       </p>
 
     ) : (
@@ -160,7 +160,7 @@ const handleSolve = async () => {
       className="continue-btn"
       onClick={handleContinue}
     >
-      Tiếp tục
+      Continue
     </button>
   </div>
 )}
@@ -172,38 +172,38 @@ const handleSolve = async () => {
 <section className="grid md:grid-cols-3 gap-8 px-10 py-10 max-w-6xl mx-auto">
   <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
           <h3 className="text-xl font-semibold mb-3">
-            ⚡ Giải nhanh
+            ⚡ Fast Solutions
           </h3>
           <p className="text-gray-400">
-            AI giải bài toán trong vài giây.
+            AI solves math problems within seconds.
           </p>
         </div>
 
         <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
           <h3 className="text-xl font-semibold mb-3">
-            📚 Giải chi tiết
+            📚 Step-by-Step Solutions
           </h3>
           <p className="text-gray-400">
-            Phân tích từng bước dễ hiểu.
+            Clear step-by-step explanations.
           </p>
         </div>
 
         <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
           <h3 className="text-xl font-semibold mb-3">
-            🎯 Chuẩn chương trình
+            🎯 Curriculum Aligned
           </h3>
           <p className="text-gray-400">
-            Phù hợp chương trình Toán lớp 1-12.
+            Aligned with the K-12 math curriculum.
           </p>
         </div>
   {/* H1 */}
   <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
     <h3 className="text-xl font-semibold mb-3">
-      📘 Ôn Tập
+      📘 Practice & Review
     </h3>
 
     <p className="text-gray-400">
-      Giải pháp giúp học sinh ôn tập hiệu quả môn Toán.
+      An effective solution for students to review and practice Math.
     </p>
   </div>
 
@@ -211,11 +211,11 @@ const handleSolve = async () => {
   {/* H2 */}
   <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
     <h3 className="text-xl font-semibold mb-3">
-      🤖 Trợ lý toán
+      🤖 Math Assistant
     </h3>
 
     <p className="text-gray-400">
-      Trợ lý đắc lực cho phụ huynh trong việc dạy con môn Toán.
+      A helpful assistant for parents teaching their children Math.
     </p>
   </div>
 
@@ -223,11 +223,11 @@ const handleSolve = async () => {
   {/* H3 */}
   <div className="bg-[#1e293b] p-6 rounded-xl hover:bg-[#263349] transition">
     <h3 className="text-xl font-semibold mb-3">
-      📝 Thư viện đề thi
+      📝 Exam Library
     </h3>
 
     <p className="text-gray-400">
-      Giúp giáo viên tạo đề thi nhanh và hiệu quả nhất.
+      Helps teachers create exams quickly and efficiently.
     </p>
   </div>
 
@@ -237,14 +237,14 @@ const handleSolve = async () => {
       <section className="text-center py-20">
 
         <h2 className="text-3xl font-bold mb-6">
-          Bắt đầu học toán với AI ngay hôm nay
+          Start learning math with AI today
         </h2>
 
         <Link
           href="/register"
           className="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-lg text-lg"
         >
-          Đăng ký miễn phí
+          Sign Up for Free
         </Link>
 
       </section>
@@ -252,7 +252,7 @@ const handleSolve = async () => {
 
       {/* FOOTER */}
       <footer className="border-t border-gray-800 py-6 text-center text-gray-500">
-        © 2026 AI Toán Học
+        © 2026 AI Math Solver
       </footer>
 
     </div>

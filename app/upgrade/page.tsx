@@ -1,68 +1,41 @@
 "use client";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { useState } from "react";
 export default function UpgradePage() {
-  const handleUpgrade = async (plan: string, amount: number) => {
-  if (amount === 0) {
-    alert("Gói Free là mặc định, không cần thanh toán.");
-    return;
-  }
-
-  try {
-    const res = await fetch("/api/create-payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan, amount }),
-    });
-
-    if (!res.ok) {
-      alert("Lỗi tạo thanh toán");
-      return;
-    }
-
-    const data = await res.json();
-
-    if (data.checkoutUrl) {
-      window.location.href = data.checkoutUrl;
-    } else {
-      alert("Không tạo được link thanh toán");
-    }
-  } catch (error) {
-    console.error(error);
-    alert("Có lỗi xảy ra");
-  }
-};
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const plans = [
   {
     name: "Free",
-    price: "0đ",
+    price: "USD 0",
     amount: 0,
-    questions: "20 câu hỏi / tháng",
-    tokens: "50,000 tokens",
+    questions: "5 questions per month",
+    tokens: "12,500 tokens",
     model: "GPT-3.5",
     highlight: false,
   },
   {
     name: "Standard",
-    price: "99,000đ",
-    amount: 99000,
-    questions: "500 câu hỏi / tháng",
+    price: "USD 4",
+    amount: 4,
+    questions: "500 questions per month",
     tokens: "500,000 tokens",
     model: "GPT-3.5 Turbo",
     highlight: false,
   },
   {
     name: "Pro",
-    price: "299,000đ",
-    amount: 299000,
-    questions: "2000 câu hỏi / tháng",
+    price: "USD 12",
+    amount: 12,
+    questions: "2000 questions per month",
     tokens: "2,000,000 tokens",
     model: "GPT-4",
     highlight: true,
   },
   {
     name: "Premium",
-    price: "599,000đ",
-    amount: 599000,
-    questions: "Không giới hạn câu hỏi",
+    price: "USD 24",
+    amount: 24,
+    questions: "Ask unlimited questions",
     tokens: "10,000,000 tokens",
     model: "GPT-4 Turbo",
     highlight: false,
@@ -72,7 +45,7 @@ export default function UpgradePage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white px-6 py-16">
       <h1 className="text-4xl font-bold text-center mb-12">
-        Chọn gói phù hợp với bạn
+        Choose the perfect plan for you
       </h1>
 
       <div className="grid md:grid-cols-4 gap-6 max-w-7xl mx-auto">
@@ -87,7 +60,7 @@ export default function UpgradePage() {
           >
             {plan.highlight && (
               <div className="mb-4 text-green-400 font-semibold text-sm">
-                ⭐ Phổ biến nhất
+                ⭐ Most popular
               </div>
             )}
 
@@ -102,20 +75,62 @@ export default function UpgradePage() {
             </ul>
 
             <button
-  onClick={() =>
-    handleUpgrade(
-      plan.name.toLowerCase(),
-      parseInt(plan.price.replace(/\D/g, "")) || 0
-    )
-  }
+  onClick={() => {
+    if (plan.amount === 0) {
+      alert("The Free plan is the default and requires no payment.");
+      return;
+    }
+    setSelectedPlan(plan.name);
+  }}
   className={`w-full py-2 rounded-lg font-semibold ${
     plan.highlight
       ? "bg-green-600 hover:bg-green-700"
       : "bg-gray-700 hover:bg-gray-600"
   }`}
 >
-  Chọn gói
+  Select plan
 </button>
+{selectedPlan === plan.name && plan.amount > 0 && (
+  <div className="mt-4">
+    <PayPalScriptProvider
+  options={{
+    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+    currency: "USD",
+    locale: "en_US",
+    disableFunding: "card", // 👈 QUAN TRỌNG
+  }}
+>
+      <PayPalButtons
+        createOrder={async () => {
+  const res = await fetch("/api/paypal/create-order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      plan: plan.name,
+      amount: plan.amount,
+    }),
+  });
+
+  const data = await res.json();
+  return data.id;
+}}
+        onApprove={async (data) => {
+          await fetch("/api/paypal/capture-order", {
+            method: "POST",
+            body: JSON.stringify({
+              orderID: data.orderID,
+              plan: plan.name,
+            }),
+          });
+
+          window.location.href = "/payment-success?success=true";
+        }}
+      />
+    </PayPalScriptProvider>
+  </div>
+)}
           </div>
         ))}
       </div>
