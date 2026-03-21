@@ -23,7 +23,6 @@ model User {
   orders Order[]
 }
 
-
 model Order {
   id          String   @id @default(uuid())
   userId      String

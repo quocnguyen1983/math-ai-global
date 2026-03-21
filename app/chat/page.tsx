@@ -34,11 +34,10 @@ type Chat = {
 export default function Home() {
   const [chats, setChats] = useState<any[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false); 
   const handleNewChat = () => {
   const newChat = {
     id: Date.now().toString(),
-    title: "New conversation",
+    title: "New Conversation",
     messages: [],
   };
 
@@ -156,16 +155,12 @@ useEffect(() => {
         setCurrentChatId(parsed[0].id);
       }
     }
-    setIsLoaded(true);
   }, []);
 
   // Save localStorage
-  // Save localStorage
-useEffect(() => {
-  if (!isLoaded) return; // ❗ chặn save khi chưa load xong
-
-  localStorage.setItem("chats", JSON.stringify(chats));
-}, [chats, isLoaded]);
+  useEffect(() => {
+    localStorage.setItem("chats", JSON.stringify(chats));
+  }, [chats]);
 const currentChat = chats.find(chat => chat.id === currentChatId);
   const messages = currentChat?.messages || [];
 useEffect(() => {
@@ -257,15 +252,41 @@ setInput("");
 
       const data = await res.json();
 
-      const aiMessage = { role: "assistant", content: data.reply };
+// ❌ Nếu bị chặn (403)
+if (!res.ok) {
+  const aiMessage = {
+    role: "assistant",
+    content:
+      data.error || "🚫 You have reached your question limit. Please upgrade your plan!",
+  };
 
-      setChats(prev =>
-        prev.map(chat =>
-          chat.id === currentChatId
-            ? { ...chat, messages: [...chat.messages, aiMessage] }
-            : chat
-        )
-      );
+  setChats(prev =>
+    prev.map(chat =>
+      chat.id === currentChatId
+        ? { ...chat, messages: [...chat.messages, aiMessage] }
+        : chat
+    )
+  );
+
+  // ⏳ 5 giây → chuyển trang upgrade
+  setTimeout(() => {
+    window.location.href = "/upgrade";
+  }, 5000);
+
+  setLoading(false);
+  return; // ❗ RẤT QUAN TRỌNG
+}
+
+// ✅ Nếu OK
+const aiMessage = { role: "assistant", content: data.reply };
+
+setChats(prev =>
+  prev.map(chat =>
+    chat.id === currentChatId
+      ? { ...chat, messages: [...chat.messages, aiMessage] }
+      : chat
+  )
+);
 
       setLoading(false);
       setInput("")
