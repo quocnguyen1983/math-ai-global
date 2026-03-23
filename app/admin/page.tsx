@@ -1,26 +1,19 @@
 import { redirect } from "next/navigation"
 import prisma from "@/lib/prisma"
-import { getServerSession } from "next-auth"
+
 export const dynamic = "force-dynamic"
+
 export default async function AdminPage() {
 
-  // Email admin của bạn
-  // ✅ THÊM ĐOẠN NÀY
+  const adminEmail = "quocnguyen1983@gmail.com"
 
+  const user = await prisma.user.findUnique({
+    where: { email: adminEmail }
+  })
 
-const session = await getServerSession()
-
-if (!session?.user?.email) {
-  redirect("/")
-}
-
-const user = await prisma.user.findUnique({
-  where: { email: session.user.email }
-})
-
-if (!user || user.role !== "ADMIN") {
-  redirect("/")
-}
+  if (!user || user.role !== "ADMIN") {
+    redirect("/")
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-950 to-slate-900 text-white p-10">
