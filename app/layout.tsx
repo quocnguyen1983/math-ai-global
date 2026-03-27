@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "katex/dist/katex.min.css";
 export const metadata = {
-  title: "AI Toán Học - Giải toán lớp 1-12 bằng AI",
+  title: "AI Math Solver - AI Math Solver for K-12 Students",
   description:
-    "Công cụ AI giải toán từ lớp 1 đến lớp 12. Phân tích chi tiết từng bước, vẽ đồ thị và hiển thị công thức LaTeX.",
+    "AI Math Solver for K-12 Students. Step-by-step solutions, graph plotting, and LaTeX-formatted formulas.",
 };
 
 export default function RootLayout({
